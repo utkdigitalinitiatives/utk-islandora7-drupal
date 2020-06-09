@@ -1,0 +1,436 @@
+/* This file will hold styles for all layouts using the alpha grid (i.e. not the mobile layout). */
+
+.sf-menu {
+    display: inline;
+    }
+.sf-menu.sf-style-default {
+    float: left;
+    margin-bottom: 0em;
+    padding: 0;
+    margin-top: 0em;
+}
+.sf-menu.sf-style-default.sf-navbar {
+    width: 100%;
+}
+.sf-menu.sf-style-default ul {
+    padding-left: 0;
+    	background: #f77f00 url(../images/--sprite.png) 0 -240px repeat-x;
+	width: 100%;
+	float: left;
+	padding: 0;
+	margin: 0 0 2.5em 0;
+}
+.sf-menu.sf-style-default a {
+    font-family: Arial, Helvetica, sans-serif;
+	padding: 6px 16px;
+	display: block;
+	color: #fff;
+	font-weight: bold;
+	font-size: 0.9em;
+	border-bottom: 0;
+	border-left: #FAAE5E 1px solid;
+	border-right: 1px solid #444;
+	border-top: none; 
+	text-shadow: rgba(0, 0, 0, 0.2) 0 1px 0;
+	background: #f77f00 url(../images/bg-nav1-a.png) top center repeat-x;
+	-webkit-transition: all 0.25s ease-in-out;
+	   -moz-transition: all 0.25s ease-in-out;
+	     -o-transition: all 0.25s ease-in-out;
+	        transition: all 0.25s ease-in-out;
+
+}
+.sf-menu.sf-style-default a, .sf-menu.sf-style-default a:visited {
+    color: #ffffff;
+}
+.sf-menu.sf-style-default a.sf-with-ul {
+    padding-right: 2em;
+}
+.sf-menu.sf-style-default.rtl a.sf-with-ul {
+    padding-left: 2.25em;
+    padding-right: 1em;
+}
+.sf-menu.sf-style-default span.sf-description {
+    color: #F77F00;
+    display: block;
+    font-size: 0.8em;
+    line-height: 1.5em;
+    margin: 5px 0 0 5px;
+    padding: 0;
+}
+.sf-menu.sf-style-default li, .sf-menu.sf-style-default.sf-navbar {
+    background: none repeat scroll 0 0 #f77F00;
+    margin-top: -5px;
+}
+.sf-menu.sf-style-default li li {
+    background: none repeat scroll 0 0 #F77F00;
+}
+.sf-menu.sf-style-default li li li {
+    background: none repeat scroll 0 0 #F77F00;
+}
+.sf-menu.sf-style-default li:hover, .sf-menu.sf-style-default li.sfHover, .sf-menu.sf-style-default a:focus, .sf-menu.sf-style-default a:hover, .sf-menu.sf-style-default a:active {
+    background: none repeat scroll 0 0 #F77F00;
+    outline: 0 none;
+    color: #666666;
+    
+}
+.sf-menu.sf-style-default ul.sf-megamenu li.sf-megamenu-wrapper ol, .sf-menu.sf-style-default ul.sf-megamenu li.sf-megamenu-wrapper ol li {
+    margin: 0;
+    padding: 0;
+   
+}
+.sf-menu.sf-style-default ul.sf-megamenu li.sf-megamenu-wrapper a.menuparent {
+    font-weight: bold;
+}
+.sf-menu.sf-style-default ul.sf-megamenu li.sf-megamenu-wrapper ol li.sf-megamenu-column {
+    display: inline;
+    float: left;
+    width: 12em;
+    
+}
+.sf-menu.sf-style-default.rtl ul.sf-megamenu li.sf-megamenu-wrapper ol li.sf-megamenu-column {
+    float: right;
+}
+.sf-menu.sf-style-default li.sf-parent-children-1 ul.sf-megamenu {
+    width: 12em;
+}
+.sf-menu.sf-style-default li.sf-parent-children-2 ul.sf-megamenu {
+    width: 24em;
+}
+.sf-menu.sf-style-default li.sf-parent-children-3 ul.sf-megamenu {
+    width: 36em;
+}
+.sf-menu.sf-style-default li.sf-parent-children-4 ul.sf-megamenu {
+    width: 48em;
+}
+.sf-menu.sf-style-default li.sf-parent-children-5 ul.sf-megamenu {
+    width: 60em;
+}
+.sf-menu.sf-style-default li.sf-parent-children-6 ul.sf-megamenu {
+    width: 72em;
+}
+.sf-menu.sf-style-default li.sf-parent-children-7 ul.sf-megamenu {
+    width: 84em;
+}
+.sf-menu.sf-style-default li.sf-parent-children-8 ul.sf-megamenu {
+    width: 96em;
+}
+.sf-menu.sf-style-default li.sf-parent-children-9 ul.sf-megamenu {
+    width: 108em;
+}
+.sf-menu.sf-style-default li.sf-parent-children-10 ul.sf-megamenu {
+    width: 120em;
+}
+
+.sitename-img {
+    display: block;
+   /* height: 117px;
+    margin-top: -1.35em;*/
+    width: 100%;
+}
+#block-menu-menu-horizontal-menu {
+    display: none;
+    }
+#zone-menu {
+    background-color: #F77F00;
+   /* margin-bottom: 0.5em;*/
+   margin-top: -1em; 
+   margin-bottom: 1em;
+    padding: 0.3em 0;
+}
+.footer-column {
+    margin-left: 1.0416%;
+    margin-right: 1.0416%;
+    width: 100%;
+}
+#zone-branding {
+    background: url("../images/headerTemplate-sm-grey.png") repeat scroll 0 0 transparent;
+    height: 117px;
+    margin-top: -0.7em;  /*standard*/
+    *margin-top: 1.6em; /* IE 7 and below */
+}
+.block-superfish {
+    margin-top: 0.5em;
+    }
+    
+@-moz-document url-prefix() {
+/*Styles */
+ .sitename-img {
+   margin-top: -1.34em;
+}
+.sf-menu.sf-style-default {
+    margin-top: -0.4em;
+}
+}
+.profile .field-group-fieldset {
+    width: 55%;
+}
+.field-name-field-bov-picture {
+    float: left;
+    margin-right: 1em;
+    }
+.field-name-field-bov-education {
+    margin-top: 5em;
+}
+.field-name-field-bov-prof-memberships {
+    margin-top: 1em;
+}
+.field-name-field-biography {
+    margin-top: 1em;
+}
+.field-name-field-bov-interests {
+    margin-top: 1em;
+}
+.field-name-field-year-graduated {
+    margin-top: 1em;
+}
+.node-cci-bov .group-employment{
+   padding: 2%;
+    width: 65%;
+    }
+td.views-field-field-bov-picture {
+    display: block;
+    }
+th.views-field-field-bov-picture {
+    display: table-cell;
+    }
+       @-moz-document url-prefix() {
+/* Styles */
+.sf-menu.sf-style-default {
+    margin-top: -0.4em;
+}
+}
+.site-name-slogan {
+    color: #FFFFFF;
+    float: left;
+    margin-top: 0.5em;
+    padding-left: 10px;
+}
+.site-name {
+    color: #FFFFFF;
+    margin-top: -5px;
+}
+.site-slogan {
+    font-weight: normal;
+    color: #ffffff;
+    display: block;
+     text-shadow: 0 2px 1px rgba(0, 0, 0, 0.5);
+     margin-top: -0.5em;
+}
+.site-name  a a:link a:visited {
+     text-shadow: rgba(0, 0, 0, 0.2) 0 1px 0;
+     color: #ffffff;
+     }
+   
+.region-branding-inner a:link a:visited a:hover{
+    color: #ffffff;
+    }
+.site-name {
+    font-family: Arial,helvetica,sans-serif;
+    text-shadow: 0 2px 1px rgba(0, 0, 0, 0.5);
+}
+h1.site-name a, a.link, a.visited{
+    text-decoration: none;
+    color: #FFFFFF;
+    text-shadow: 0 2px 1px rgba(0, 0, 0, 0.5);
+    margin-left: 0px;
+    font-size: 2.0em;
+    margin-top: 0px;
+    line-height: 1.5em;
+}
+h1.site-name, h2.site-name a, a.link, a.visited{
+    text-decoration: none;
+    color: #fff;
+    text-shadow: 0 2px 1px rgba(0, 0, 0, 0.5);
+    margin-left: 0px;
+    font-size: 1.0em;
+    margin-top: 0px;
+    padding-top: 4px;
+    padding-bottom: 16px;
+}
+ h2.site-name a, a.link, a.visited {
+    color: #ffffff;
+    font-size: 1.1em;
+    margin-left: 0;
+    margin-top: 0;
+    padding-bottom: 16px;
+    padding-top: 4px;
+    text-decoration: none;
+    text-shadow: 0 2px 1px rgba(0, 0, 0, 0.5);
+}
+
+h1.site-name a:hover, a:focus { color: #F77F00; }
+h1.site-name, h2.site-name a:hover, a:focus { color: #F77F00; }
+.site-name, .site-slogan {
+    line-height: 0em;
+    margin-bottom: 0;
+}
+
+.sf-menu.sf-style-default {
+    margin-top: -0.4em;
+}
+#zone-menu {
+    background-color: #F77F00;
+    margin-bottom: 1em;
+    padding: 0.2em 0;
+    margin-top: 0em;
+}
+  h2.site-name {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    }
+  h1.site-name {
+       margin-top: 1em;
+       margin-bottom: 0em;
+  }
+@-moz-document url-prefix() {
+/* Styles */
+   h1.site-name {
+      margin-top: 0em;
+}
+   h2.site-name {
+      margin-top: 0.5em;
+}
+}
+
+li.n1 {
+	margin-left: 1.6194%;
+	width: 18.42105%;
+}
+li.n1 ul {
+	left: 0;
+}
+
+li.n2 {
+	width: 8.2995%;
+}
+li.n2 ul {
+	left: -55px;
+}
+li.n3 {
+	width: 7.2874%;
+}
+li.n3 ul {
+	left: -72px;
+}
+li.n4 {
+	width: 22.0647%;
+}
+li.n4 ul {
+	left: -35px;
+}
+li.n5 {
+	width: 12.3481%;
+}
+li.n5 ul {
+	left: -65px;
+}
+li.n6 {
+	width: 10.5263%;
+}
+li.n6 ul {
+	left: -71px;
+}
+ul#toolbox li.n7 {
+	width: 17.2064%;
+	border-right: none;
+}
+
+li.n6 ul {
+	left: -61px;
+}
+  
+.ctools-jump-menu-select {
+      display: none;
+}
+.search {
+    margin: 30px auto 0;
+}
+.block-jump-menu {
+    margin: -0.5em;
+    display: none;
+}
+body {
+    background: url("../images/bg-body-template.jpg") repeat-x scroll 0 0 #FFFFFF;
+}
+.logo {
+  width: 100%;
+  margin-right: 0em;
+  display: block;
+  	margin-top:  25px;
+  }
+.logo a {
+   padding-top: 65px;
+}
+.zone-branding {
+   display: block;
+   }
+.block-delta-blocks-site-name {
+   display: none;
+}
+h1.site-name, h2.site-name {
+ margin-left: 0em;
+ margin-top: 1em;
+}
+td.views-field.views-field-field-bov-picture img{
+        display: block;
+        }
+td.views-field.views-field-picture img{
+        display: block;
+        }
+.views-field-picture  {display: block;
+}
+.sf-sub-indicatori {
+ display: block;
+}
+nav ul#nav1, nav ul#audience-nav, ul#toolbox     {
+  *display: block; /* IE 7 and below */
+   display: block\9; /*IE 8 and below */
+    }
+.flex-caption {
+    width: 88%;
+    font-size: 1.0em;
+}
+.international-table .views-field-field-profile-position {
+  display: table-cell;
+}
+#zone-menu {
+ border-bottom-left-radius: 10px;
+ border-bottom-right-radius: 10px;
+  box-shadow: 3px 3px 3px #888888;
+}
+.flexslider {
+  border: 2px;
+}
+.flex-nav-container {
+    border: 4px solid white;
+    box-shadow: 0 0 10px #CCCCCC;
+    float: right;
+    margin-bottom: 30px;
+    border-radius: 10px 10px 10px 10px;
+    position: relative;
+    width: 100%;
+}
+jcarousel-skin-default .jcarousel-clip-horizontal {
+width: 100%;
+overflow: hidden;
+}
+.block-block-84 {
+    display: block;
+    margin-top: 1px;
+    margin-left: 35px;
+}
+.block-block-84 img {
+    vertical-align: middle;
+}
+.view-clone-of-front-page {
+   font-size: 1em;
+font: 16px/24px Cambria,Georgia,Times,TimesNewRoman,"Times New Roman",serif;
+}
+.view-clone-of-front-page li{
+   font-size: 1em;
+font: 16px/24px Cambria,Georgia,Times,TimesNewRoman,"Times New Roman",serif;
+}
+.view-clone-of-front-page h2 {
+   margin-bottom: 0;
+}
+

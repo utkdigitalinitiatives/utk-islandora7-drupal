@@ -1,0 +1,175 @@
+.islandora-oralhistories-content {
+  background-color: #F2F2F2;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  padding: 15px;
+  width: auto;
+  max-width: 100%;
+  float: left;
+  width: 100%;
+}
+
+.islandora-oralhistories-content img {
+  margin: 0;
+  display: block;
+}
+
+.islandora-oralhistories-content .btn {
+    font-size: inherit;
+}
+
+.islandora-oralhistories-metadata {
+  display: block;
+  clear: both;
+}
+
+/* This is kept for legacy reasons. */
+dl.islandora-oralhistories-fields {
+  width: 100%;
+}
+
+dl.islandora-metadata-fields {
+    width:100%;
+}
+
+.islandora-oralhistories-metadata dt {
+  font-weight: normal;
+  text-align: right;
+  font-weight: bold;
+  padding-right: 0;
+}
+
+.islandora-oralhistories-metadata dd {
+  padding-left: 40px;
+}
+
+
+.islandora-oralhistories-metadata dt,
+.islandora-oralhistories-metadata dd {
+  border-top: 1px solid #e5e5e5;
+}
+
+.islandora-oralhistories-metadata dt.first,
+.islandora-oralhistories-metadata dd.first {
+  border-top: 0;
+}
+
+body.two-sidebars .islandora-oralhistories-sidebar {
+    clear: both;
+    width: 100%;
+}
+
+@media all and (min-width: 768px) {
+
+  body.no-sidebars .islandora-oralhistories-sidebar {
+    padding-left: 20px;
+  }
+
+  body.no-sidebars .islandora-oralhistories-sidebar {
+    float: right; /* LTR */
+    width: 35%;
+    clear: none;
+  }
+
+}
+
+
+/* Styles for HTML5 video/audio */
+.islandora-oralhistories-content .media-default-skin {
+    background-color: #000;
+    font-size: 10px;
+    padding: 0;
+    position: relative;
+    vertical-align: middle;
+    width: 100%;
+}
+
+/* Styles for .transcript-container: it fixes the scrolling issues with transcript_ui.js*/
+.transcript-container {
+    height: 300px;
+    overflow-x: auto;
+    transition: all 100ms ease 0s;
+}
+
+/* Styles for #transcript-content */
+#transcript-display {
+    margin-top: 15px;
+}
+
+#transcript-display * {
+    box-sizing: content-box;
+}
+
+#transcript-content {
+    overflow: auto;
+    height: 260px;
+    position: relative;
+}
+
+#transcript-content p {
+    margin: 0 0 0.4em;
+}
+#transcript-content span {
+    display: inline;
+    padding: 4px 2px;
+    line-height: 1em;
+    cursor: pointer;
+    color: #333;
+}
+#transcript-content span.current {
+    background: #92DFE5;
+    color: #000;
+}
+#transcript-content span:hover {
+    color: #E41;
+    text-decoration: underline;
+}
+#transcript-content span em {
+    font-style: normal;
+    background: #666;
+    color: #FFF;
+}
+
+.scroller .playing {
+    background-color: #6cf !important;
+}
+
+/* Styles for jquery-ui tabs */
+#tabs-list {
+    border-radius: 0 !important;
+    padding: 0;
+}
+
+/* Styles for transcript-edit-dialog */
+#transcript-edit-dialog {
+    display: none;
+    width: 100% !important;
+}
+
+.ctools-modal-dialog #modal-content {
+    overflow-x: auto;
+}
+
+/* Apply greater precedence over videojs CSS for CC language list items. */
+li.vjs-menu-item {
+    font-size: 1em !important;
+    text-transform: uppercase !important;
+}
+
+/*
+ Provides em width for tier selector button in the transcript viewer so that
+ "Transcript, Translation, Speaker" text is not wider than the button width.
+ Adjustment of this value may be necessary depending on the given theme.
+*/
+.bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+    width: 15.5em !important;
+}
+/*
+ Provides 1em of padding around the speaker name in the transcript viewer
+ so that it does not overlap with the transcript content.
+*/
+div.speaker-name {
+    padding-right: 1em;
+}

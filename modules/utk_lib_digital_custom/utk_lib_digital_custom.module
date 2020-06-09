@@ -1,0 +1,64 @@
+<?php
+/**
+ * @file
+ * management of custom blocks for digital.lib.utk.edu d7/islandora instance
+ */
+
+function utk_lib_digital_custom_block_info()
+{
+    $blocks['utk_lib_digital_custom_header'] = array(
+        'info' => t('Digital Collections Header'),
+        'cache' => DRUPAL_NO_CACHE,
+    );
+
+    return $blocks;
+}
+
+function utk_lib_digital_custom_block_view($delta = '')
+{
+    $block = array();
+    switch ($delta) {
+        case 'utk_lib_digital_custom_header':
+            $block['content'] = utk_lib_digital_custom_header();
+            break;
+    }
+
+    return $block;
+}
+
+function utk_lib_digital_custom_header()
+{
+    return '
+            <div class="utk-lib-digital--header">
+              <div class="utk-lib-digital--header--container">
+                  <div class="container">
+                      <a class="utk-lib-digital--header--title"
+                         href="https://digital.lib.utk.edu">
+                        <h1>' . variable_get('site_name', 'Default'). '</h1>
+                      </a>
+                      <ul class="utk-lib-digital--header--menu">
+                        <li><a href="https://digital.lib.utk.edu">Home</a></li>
+                        <li><a href="https://digital.lib.utk.edu/collections/about">About</a></li>
+                        <li><a href="https://digital.lib.utk.edu/collections/user">User Login</a></li>
+                      </ul>
+                  </div>
+              </div>
+              <div class="utk-lib-digital--header--background"> ' . utk_lib_digital_custom_featured_image() . '</div>
+            </div>
+            ';
+}
+
+function utk_lib_digital_custom_featured_image()
+{
+    $json = file_get_contents('https://www.lib.utk.edu/wp-json/dc/featured');
+    $featured = json_decode($json);
+
+    $pid = $featured->data->PID;
+    $alt = $featured->data->fgs_label_s;
+
+    $src = 'https://digital.lib.utk.edu/iiif/2/collections~islandora~object~' . $pid . '~datastream~FEATURED~view/full/322,/0/default.jpg';
+
+    $output = '<img src="' . $src .'" alt="' . $alt .'" />';
+
+    return $output;
+}

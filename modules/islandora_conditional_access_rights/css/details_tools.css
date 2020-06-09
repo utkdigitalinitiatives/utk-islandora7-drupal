@@ -1,0 +1,59 @@
+.item-list UL.detail-tools LI {
+  margin: 0;
+}
+DIV.download-additional {
+  display: none;
+  padding: 5px;
+  position: absolute;
+  min-width:300px;
+  max-width:450px;
+  background-color: #7f88ab;
+  z-index: 500;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+}
+DIV.download-additional DIV.menu {
+  padding: 0 10px 0 20px;
+  margin-bottom: 30px;
+  color:white;
+}
+DIV.download-additional DIV.menu H3 {
+  color: white;
+  margin-top: 0.6em;
+  margin-bottom: 0.6em;
+}
+DIV.download-additional DIV.menu TABLE.download TR {
+  cursor: pointer;
+}
+DIV.download-additional DIV.menu TABLE.download TR TD:first-child {
+  white-space: nowrap;
+  width: 60%;
+}
+DIV.download-additional DIV.menu TABLE.download TR TD:last-child {
+  text-align: right;
+  font-size: 75%;
+}
+DIV.download-additional DIV.menu DIV.access {
+  white-space: nowrap;
+  margin-top: 1em;
+  padding-bottom: 1.5em;
+}
+IMG.accessimage {
+  height: 35px;
+  padding:0;
+}
+DIV.download-additional DIV.menu TABLE.access {
+  margin-top: 2em;
+}
+DIV.download-additional DIV.menu TABLE.access TH {
+  font-weight: bold;
+  padding-top: 1em;
+  border-bottom: none;
+}
+DIV.download-additional DIV.menu TABLE TBODY {
+  border-top: none;
+}
+.dc-sidebox .dc-detail-tools A.active {
+  color: lightgray;
+}

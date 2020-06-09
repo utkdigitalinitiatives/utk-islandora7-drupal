@@ -1,0 +1,68 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the islandora_conditional_access_rights module.
+ *
+ *
+ *  Copyright 2017 Leiden University Library
+ *
+ *  This file is part of islandora_conditional_access_rights.
+ *
+ *  islandora_conditional_access_rights is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
+/**
+ * Implements hook_install().
+ */
+function islandora_conditional_access_rights_install() {
+  drupal_mkdir('public://islandora_conditional_access_rights');
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function islandora_conditional_access_rights_uninstall() {
+  $upload_path = 'public://islandora_conditional_access_rights';
+  $removal_files = file_scan_directory($upload_path, '/(.*)/');
+
+  foreach ($removal_files as $file) {
+    @file_delete($file);
+  }
+  drupal_rmdir($upload_path);
+}
+
+/**
+ * Implements hook_schema().
+ */
+function islandora_conditional_access_rights_schema() {
+  // make custom cache table
+  $schema['cache_islandora_conditional_access_rights_config'] = drupal_get_schema_unprocessed('system', 'cache');
+  $schema['cache_islandora_conditional_access_rights_md_value'] = drupal_get_schema_unprocessed('system', 'cache');
+  return $schema;
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function islandora_conditional_access_rights_update_7200() {
+  if (db_table_exists('cache_islandora_conditional_access_rights_access_rights_value')) {
+    db_drop_table('cache_islandora_conditional_access_rights_access_rights_value');
+  }
+  if (!db_table_exists('cache_islandora_conditional_access_rights_md_value')) {
+    db_create_table('cache_islandora_conditional_access_rights_md_value', drupal_get_schema_unprocessed('system', 'cache'));
+  }
+}

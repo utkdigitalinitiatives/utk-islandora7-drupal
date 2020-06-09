@@ -1,0 +1,393 @@
+<?php
+/**
+ * @file
+ * Hooks and callbacks for this module.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function islandora_oralhistories_menu() {
+  $items = array();
+  $items['admin/islandora/solution_pack_config/oralhistories'] = array(
+    'title' => 'Oral Histories Solution Pack',
+    'description' => 'Define ingest behavior and select media player.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('islandora_oralhistories_admin'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'includes/admin.form.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['islandora/object/%islandora_object/edit_form/%islandora_datastream'] = array(
+    'title' => 'Oral Histories Transcript Edit form',
+    'description' => 'Edit transcript',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array(
+      'islandora_oralhistories_transcript_edit_form',
+      2,
+      4,
+    ),
+    'access callback' => 'islandora_datastream_access',
+    'access arguments' => array(ISLANDORA_REPLACE_DATASTREAM_CONTENT, 4),
+    'file' => 'includes/transcript.edit.form.inc',
+    'type' => MENU_CALLBACK,
+    'load arguments' => array(2),
+  );
+  // Try ctools ajax modal form for transcript edit form.
+  $items['islandora/object/%islandora_object/edit_form/%islandora_datastream/%ctools_js'] = array(
+    'page callback' => 'edit_transcript_modal',
+    'page arguments' => array(2, 4, 5),
+    'access callback' => 'islandora_datastream_access',
+    'access arguments' => array(ISLANDORA_REPLACE_DATASTREAM_CONTENT, 4),
+    'file' => 'includes/transcript.edit.form.inc',
+    'type' => MENU_CALLBACK,
+  );
+  // Adds a tab in the admininterface when submodules (e.g., Transcripts UI)
+  // are added.
+  $items['admin/islandora/solution_pack_config/oralhistories/config'] = array(
+    'title' => 'Settings',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -60,
+  );
+
+  return $items;
+}
+
+
+/**
+ * Implements hook_permission().
+ */
+function islandora_oralhistories_permission() {
+  return array();
+}
+
+/**
+ * Checks whether the user can access web annotations for a given object.
+ *
+ * @param array $perms
+ *   Array of user permission to test for.
+ * @param \AbstractObject $object
+ *   The object to test, if NULL given the object doesn't exist or is
+ *   inaccessible.
+ *
+ * @return bool
+ *   TRUE if user access granted
+ *   FALSE if user access denied
+ */
+/*
+function islandora_oralhistories_web_annotation_access(array $perms, AbstractObject $object = NULL) {
+global $user;
+$has_access = FALSE;
+if (!isset($object)) {
+return FALSE;
+}
+elseif ($user->uid == 1) {
+return TRUE;
+}
+else {
+foreach ($perms as $perm) {
+if (user_access($perm) && islandora_object_access($perm, $object)) {
+$has_access = TRUE;
+}
+}
+return $has_access;
+}
+}
+ */
+
+/**
+ * Implements hook_islandora_required_objects().
+ */
+function islandora_oralhistories_islandora_required_objects(IslandoraTuque $connection) {
+  $module_path = drupal_get_path('module', 'islandora_oralhistories');
+  // Oral Histories Content Model.
+  $oralhistories_content_model = $connection->repository->constructObject('islandora:oralhistoriesCModel');
+  $oralhistories_content_model->owner = 'fedoraAdmin';
+  $oralhistories_content_model->label = 'Islandora Oral Histories Content Model';
+  $oralhistories_content_model->models = 'fedora-system:ContentModel-3.0';
+  // DS-COMPOSITE-MODEL Datastream.
+  islandora_oralhistories_ingest__ds_composite_datastream($oralhistories_content_model,
+    $module_path . "/xml/islandora_oralhistories_ds_composite_model.xml");
+
+  // Oral Histories Collection.
+  $oralhistories_collection = $connection->repository->constructObject('islandora:oralhistories_collection');
+  $oralhistories_collection->owner = 'fedoraAdmin';
+  $oralhistories_collection->label = 'Oral Histories Collection';
+  $oralhistories_collection->models = 'islandora:collectionCModel';
+  $oralhistories_collection->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', 'islandora:root');
+  // Collection Policy Datastream.
+  $datastream = $oralhistories_collection->constructDatastream('COLLECTION_POLICY', 'X');
+  $datastream->label = 'Collection policy';
+  $datastream->mimetype = 'text/xml';
+  $datastream->setContentFromFile("$module_path/xml/islandora_oralhistories_collection_policy.xml", FALSE);
+  $oralhistories_collection->ingestDatastream($datastream);
+  // TN Datastream.
+  $datastream = $oralhistories_collection->constructDatastream('TN', 'M');
+  $datastream->label = 'Thumbnail';
+  $datastream->mimetype = 'image/png';
+  $datastream->setContentFromFile("$module_path/images/folder.png", FALSE);
+  $oralhistories_collection->ingestDatastream($datastream);
+
+  return array(
+    'islandora_oralhistories' => array(
+      'title' => 'Islandora Oral Histories',
+      'objects' => array(
+        $oralhistories_content_model,
+        $oralhistories_collection,
+      ),
+    ),
+  );
+}
+
+/**
+ * This function will add an entity DS composite datastream to an object.
+ *
+ * This is a workaround of a known issue with temp files being lost in Tuque in
+ * batches because of object destruction during the serialization process.
+ *
+ * @param AbstractObject $object
+ *   The object to add the DS composite datastream to.
+ */
+function islandora_oralhistories_ingest__ds_composite_datastream(AbstractObject $object, $filename) {
+  $module_path = drupal_get_path('module', 'islandora_oralhistories');
+
+  $ds_composite_datastream = $object->constructDatastream('DS-COMPOSITE-MODEL', 'X');
+  $ds_composite_datastream->label = 'DS-COMPOSITE-MODEL';
+  $ds_composite_datastream->mimetype = 'text/xml';
+  $ds_composite_datastream->setContentFromFile($filename, FALSE);
+  $object->ingestDatastream($ds_composite_datastream);
+}
+
+
+/**
+ * Implements hook_islandora_xml_form_builder_forms().
+ */
+function islandora_oralhistories_islandora_xml_form_builder_forms() {
+  $module_path = drupal_get_path('module', 'islandora_oralhistories');
+  return array(
+    'oralhistories MODS form' => array(
+      'form_file' => "$module_path/xml/islandora_oralhistories_form_mods.xml",
+    ),
+  );
+}
+
+/**
+ * Implements hook_islandora_xml_form_builder_form_associations().
+ */
+function islandora_oralhistories_islandora_xml_form_builder_form_associations() {
+  return array(
+    'islandora_oralhistories_mods_form' => array(
+      'content_model' => 'islandora:oralhistoriesCModel',
+      'form_name' => 'oralhistories MODS form',
+      'dsid' => 'MODS',
+      'title_field' => array('titleInfo', 'title'),
+      'transform' => 'mods_to_dc.xsl',
+      'template' => FALSE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function islandora_oralhistories_theme($existing, $type, $theme, $path) {
+  $module_path = drupal_get_path('module', 'islandora_oralhistories');
+  return array(
+    'islandora_oralhistories' => array(
+      'template' => 'theme/islandora-oralhistories',
+      'file' => 'theme/theme.inc',
+      'pattern' => 'islandora_oralhistories__',
+      'variables' => array(
+        'object' => NULL,
+      ),
+    ),
+    'islandora_native_html5' => array(
+      'template' => 'theme/islandora-native-html5',
+      'file' => 'theme/theme.inc',
+      'variables' => array(
+        'object' => NULL,
+        'params' => NULL,
+      ),
+    ),
+    'islandora_transcript_scroller' => array(
+      'template' => 'theme/islandora-transcript-scroller',
+      'file' => 'theme/theme.inc',
+    ),
+    'islandora_html5_video_stack' => array(
+      'template' => 'theme/islandora-html5-video-stack',
+      'file' => 'theme/theme.inc',
+      'pattern' => 'islandora-html5-video-stack__',
+      'variables' => array(
+        'object' => NULL,
+        'params' => NULL,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_CMODEL_PID_islandora_view_object().
+ */
+function islandora_oralhistories_islandora_oralhistoriesCModel_islandora_view_object($object, $page_number, $page_size) {
+  $output = theme('islandora_oralhistories', array('object' => $object));
+  return array('' => $output);
+}
+
+/**
+ * Implements hook_islandora_ingest_steps().
+ */
+function islandora_oralhistories_islandora_oralhistoriesCModel_islandora_ingest_steps() {
+  return array(
+    'islandora_oralhistories_upload' => array(
+      'weight' => 10,
+      'type' => 'form',
+      'form_id' => 'islandora_oralhistories_upload_form',
+      'module' => 'islandora_oralhistories',
+      'file' => 'includes/oralhistories_upload.form.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_islandora_CMODEL_PID_derivative().
+ */
+function islandora_oralhistories_islandora_oralhistoriesCModel_islandora_derivative(AbstractObject $object) {
+  $derivatives = array();
+
+  // Determine type of OBJ.
+  $type = NULL;
+  if (isset($object['OBJ'])) {
+    if (preg_match('/video/', $object['OBJ']->mimetype)) {
+      $type = 'video';
+    }
+    else {
+      $type = 'audio';
+    }
+  }
+
+  // Determine derivatives based on OBJ.
+  if ($type == 'video') {
+    if (module_exists('islandora_video') && function_exists('islandora_video_islandora_sp_videoCModel_islandora_derivative')) {
+      $derivatives = islandora_video_islandora_sp_videoCModel_islandora_derivative();
+    }
+    else {
+      drupal_set_message(t('Error in creating video derivatives. Cannot find required functions.'), 'error', FALSE);
+      drupal_exit();
+    }
+  }
+  elseif ($type == 'audio') {
+    if (module_exists('islandora_audio') && function_exists('islandora_audio_islandora_sp_audiocmodel_islandora_derivative')) {
+      $derivatives = islandora_audio_islandora_sp_audiocmodel_islandora_derivative();
+    }
+    else {
+      drupal_set_message(t('Error in creating audio derivatives. Cannot find required functions.'), 'error', FALSE);
+      drupal_exit();
+    }
+  }
+
+  if (variable_get('islandora_oralhistories_make_vtt', TRUE)) {
+    $derivatives[] = array(
+      'source_dsid' => 'TRANSCRIPT',
+      'destination_dsid' => 'MEDIATRACK',
+      'function' => array(
+        'islandora_oralhistories_create_vtt',
+      ),
+      'file' => drupal_get_path('module', 'islandora_oralhistories') . '/includes/derivatives.inc',
+    );
+  }
+
+  // Create a derivative if a text/vtt file is ingested and the config is true.
+  if (variable_get('islandora_oralhistories_vtt_index_ds_generation', TRUE)) {
+    // We don't know the datastream id,
+    // thus need to filter if from the object keys.
+    $arr_vtt_data_streams = array();
+    foreach ($object as $key => $value) {
+      if ($object[$key]->mimetype == "text/vtt") {
+        array_push($arr_vtt_data_streams, $key);
+      }
+    }
+
+    // Loop through all MEDIATRACK or TRANSCRIPT text/vtt datastreams to see
+    // if derivative needs to be created.
+    foreach ($arr_vtt_data_streams as $key => $value) {
+      $source_id = $value;
+      $target_id = "INDEX" . $value;
+
+      $derivatives[] = array(
+        'source_dsid' => $source_id,
+        'destination_dsid' => $target_id,
+        'function' => array(
+          'islandora_oralhistories_create_vtt_indexing_datastream',
+        ),
+        'file' => drupal_get_path('module', 'islandora_oralhistories') . '/includes/derivatives.inc',
+      );
+    }
+  }
+
+  return $derivatives;
+}
+
+/**
+ * Implements hook_transcripts_ui_js_alter().
+ */
+function islandora_oralhistories_transcripts_ui_js_alter(&$scripts) {
+  $scripts['ui'] = drupal_get_path('module', 'islandora_oralhistories') . '/js/transcripts_ui.js';
+}
+
+/**
+ * Implements hook_theme_registry_alter().
+ *
+ * So we can have theme_transcripts_ui_transcript_navigation().
+ */
+function islandora_oralhistories_theme_registry_alter(&$theme_registry) {
+  $module_path = drupal_get_path('module', 'islandora_oralhistories');
+  if ($theme_registry['transcripts_ui_transcript_navigation']['function'] == 'theme_transcripts_ui_transcript_navigation') {
+    $theme_registry['transcripts_ui_transcript_navigation']['theme path'] = $module_path;
+    $theme_registry['transcripts_ui_transcript_navigation']['function'] = 'islandora_transcript_navigation';
+  }
+}
+
+/**
+ * Overrides theme_transcripts_ui_transcript_navigation() to have 'edit' button.
+ *
+ * @param array $variables
+ *   Array of variables.
+ *
+ * @return string
+ *   String of HTML
+ */
+function islandora_transcript_navigation(array &$variables) {
+  module_load_include('inc', 'islandora_oralhistories', 'includes/transcript.edit.form');
+  $path = current_path();
+  $part_parts = explode('/', $path);
+  $object = islandora_object_load($part_parts[2]);
+
+  $out = "<div class='btn-group' role='group'>";
+  $out .= "<button type='button' class='btn btn-default previous' title='Previous line'><span class='glyphicon glyphicon-arrow-left'></span> " . t('Prev') . "</button>";
+  $out .= "<button type='button' class='btn btn-default sameagain' title='Same line'><span class='glyphicon glyphicon-repeat'></span> " . t('Same') . "</button>";
+  $out .= "<button type='button' class='btn btn-default next' title='Next line'><span class='glyphicon glyphicon-arrow-right'></span> " . t('Next') . "</button>";
+  if (isset($object['TRANSCRIPT']) && islandora_datastream_access(ISLANDORA_REPLACE_DATASTREAM_CONTENT, $object['TRANSCRIPT'])) {
+    ctools_include('modal');
+    ctools_modal_add_js();
+    global $base_url;
+    $out .= "<a id='transcript-edit' class='btn btn-default edit ctools-use-modal' title='Edit' href='" . $base_url . "/islandora/object/{$object->id}/edit_form/{$object['TRANSCRIPT']->id}/nojs";
+    $out .= "'><span class='glyphicon glyphicon-edit'></span> " . t('Edit') . "</a>";
+  }
+  $out .= "</div>";
+  return $out;
+}
+
+
+/**
+ * Implements hook_islandora_edit_datastream_registry().
+ */
+function islandora_oralhistories_islandora_edit_datastream_registry(AbstractObject $object, AbstractDatastream $datastream) {
+  if (strtoupper($datastream->id) == 'TRANSCRIPT') {
+    return array(
+      array(
+        'name' => t('Islandora Oralhistories Edit Transcript'),
+        'url' => "islandora/object/{$object->id}/edit_form/{$datastream->id}",
+      ),
+    );
+  }
+}

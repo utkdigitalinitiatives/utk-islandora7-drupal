@@ -1,0 +1,64 @@
+<?php
+
+/*
+ *
+ */
+
+function utk_lib_feedback_block_info()
+{
+  $blocks = array();
+  $blocks['utk_lib_feedback'] = array(
+    'info' => t('UT Libraries Feedback'),
+  );
+
+  return $blocks;
+}
+
+function utk_lib_feedback_block_view($delta = '')
+{
+  $block = array();
+
+  switch ($delta) {
+    case 'utk_lib_feedback' :
+      $block['content'] = utk_lib_feedback_view();
+      break;
+  }
+
+  return $block;
+}
+
+function utk_lib_feedback_view()
+{
+
+  $feedback = '';
+
+  ob_start();
+  include('media/icons/check-double-solid.svg');
+  $help = ob_get_contents();
+  ob_end_clean();
+
+  ob_start();
+  include('media/icons/times-solid.svg');
+  $close = ob_get_contents();
+  ob_end_clean();
+
+  $block = '
+            <div class="utk-lib-feedback-wrapper">
+              <a href="#feedback" class="utk-lib-feedback-trigger" id="utk-lib-feedback-trigger">
+                Help Us Improve This Site 
+                <div class="utk-lib-icon-wrapper">' . $help . '</div>
+              </a>
+            </div>
+            <a href="#feedback-close" class="utk-lib-feedback-close" id="utk-lib-feedback-close">' . $close . '</a>
+            ';
+
+  ob_start();
+  include('embed/feedback.html');
+  $feedback .= ob_get_contents();
+  ob_end_clean();
+
+  $block .= $feedback;
+  $block .= '<div class="utk-lib-feedback-overlay"></div>';
+
+  return $block;
+}

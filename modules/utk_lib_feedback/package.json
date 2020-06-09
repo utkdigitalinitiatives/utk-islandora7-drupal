@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "node-sass-chokidar": "^1.3.3",
+    "npm-run-all": "^4.1.2",
+    "uglifycss": "0.0.29"
+  },
+  "scripts": {
+    "build-js": "node-sass-chokidar scss/utk_lib_feedback.scss -o css --watch --recursive",
+    "build-css": "node-sass-chokidar scss/utk_lib_feedback.scss -o css --watch --recursive",
+    "dev": "npm-run-all -p build-css"
+  }
+}

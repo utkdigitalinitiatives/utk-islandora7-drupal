@@ -1,0 +1,95 @@
+body.utk-feedback-modal {
+  overflow: hidden;
+
+  .utk-lib-feedback-modal {
+    bottom: 0;
+  }
+
+  .utk-lib-feedback-overlay,
+  .utk-lib-feedback-close {
+    display: block;
+  }
+}
+
+.utk-lib-feedback-modal {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  display: block;
+  left: 0;
+  bottom: -200%;
+  transition: $transition-all;
+  overflow: hidden;
+
+  &--loading {
+    position: absolute;
+    top: 45%;
+    width: 100%;
+    text-align: center;
+    z-index: 0;
+
+    &-button {
+      display: inline-block;
+      background-color: $globe;
+      color: $white !important;
+      height: $golden-ratio-4;
+      line-height: $golden-ratio-4;
+      border-radius: $golden-ratio-4;
+      padding: 0 $golden-ratio-2;
+      font-size: $type-2;
+      font-weight: 700;
+      width: auto;
+      box-shadow: $box-shadow;
+    }
+  }
+
+  > iframe {
+    height: 100vh !important;
+    width: 100vw !important;
+    margin: 0;
+    box-shadow: $box-shadow;
+    overflow: scroll;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.utk-lib-feedback-overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba($white, 0.95);
+  z-index: 997;
+  display: none;
+}
+
+.utk-lib-feedback-close {
+  z-index: 1000;
+  position: fixed;
+  background-color: $torch;
+  color: $white !important;
+  height: $golden-ratio-4;
+  width: $golden-ratio-4;
+  line-height: $golden-ratio-4;
+  border-radius: $golden-ratio-4;
+  text-align: center;
+  right: $golden-ratio-3;
+  top: $golden-ratio-3;
+  font-size: $type-2;
+  display: none;
+  box-shadow: $box-shadow;
+
+  &:hover,
+  &:focus {
+    color: $gray;
+    box-shadow: $box-shadow-hover;
+  }
+
+  > svg {
+    height: $type-4;
+    padding-top: 12px;
+  }
+}

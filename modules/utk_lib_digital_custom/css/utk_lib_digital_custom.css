@@ -1,0 +1,81 @@
+.utk-lib-digital--header {
+  width: 100%;
+  background-color: #333;
+  position: relative;
+  margin-bottom: 29px;
+  overflow: hidden; }
+  .utk-lib-digital--header--container {
+    overflow: hidden;
+    width: 100%; }
+    .utk-lib-digital--header--container .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 29px 0;
+      position: relative;
+      z-index: 1; }
+      @media (max-width: 767px) {
+        .utk-lib-digital--header--container .container {
+          flex-direction: column;
+          justify-content: flex-end;
+          align-items: center; } }
+      .utk-lib-digital--header--container .container::after {
+        content: unset; }
+  .utk-lib-digital--header a,
+  .utk-lib-digital--header a:visited,
+  .utk-lib-digital--header a:hover,
+  .utk-lib-digital--header a:focus {
+    color: #ffffff !important; }
+    .utk-lib-digital--header a h1,
+    .utk-lib-digital--header a:visited h1,
+    .utk-lib-digital--header a:hover h1,
+    .utk-lib-digital--header a:focus h1 {
+      color: inherit !important;
+      font-size: 23px;
+      font-weight: 700;
+      margin: 0; }
+  .utk-lib-digital--header--menu {
+    flex-grow: 0;
+    flex-shrink: 1;
+    display: flex;
+    margin: 0; }
+    @media (max-width: 767px) {
+      .utk-lib-digital--header--menu {
+        margin-top: 18px; } }
+    .utk-lib-digital--header--menu li {
+      list-style: none;
+      margin: 0 1em;
+      line-height: 1em;
+      position: relative; }
+      @media (max-width: 767px) {
+        .utk-lib-digital--header--menu li {
+          font-size: 15px; } }
+      .utk-lib-digital--header--menu li::before {
+        display: block;
+        content: ' ';
+        height: 1em;
+        width: 2px;
+        background-color: rgba(255, 255, 255, 0.11);
+        position: absolute;
+        margin-left: -1em; }
+      .utk-lib-digital--header--menu li:first-child {
+        margin-left: 0; }
+        .utk-lib-digital--header--menu li:first-child::before {
+          content: none; }
+      .utk-lib-digital--header--menu li:last-child {
+        margin-right: 0; }
+  .utk-lib-digital--header--background {
+    width: 110%;
+    height: 110%;
+    position: absolute;
+    z-index: 0;
+    left: -5%;
+    top: -5%;
+    overflow: hidden; }
+    .utk-lib-digital--header--background img {
+      width: 100%;
+      height: 100%;
+      opacity: 0.28;
+      filter: blur(18px);
+      object-fit: cover;
+      object-position: 50% 25%; }

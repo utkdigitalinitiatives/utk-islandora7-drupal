@@ -1,0 +1,5 @@
+name = Islandora conditional access rights
+description = Access and access rights based on conditions; metadata value, ip range, user role, etc.
+package = Islandora
+version = "7.x-2.x-dev"
+core = "7.x"

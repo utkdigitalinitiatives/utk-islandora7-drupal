@@ -1,0 +1,8 @@
+name = UT Libraries Digital Collections Feedback
+description = Creates basic block for gathering feedback responses.
+core = 7.x
+package = UT Libraries
+version = "7.x-0.1.2"
+
+stylesheets[all][] = css/utk_lib_feedback.css
+scripts[] = js/utk_lib_feedback.js

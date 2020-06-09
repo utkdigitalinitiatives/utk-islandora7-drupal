@@ -1,0 +1,6 @@
+name = University of Tennessee Libraries - Digital Collections
+description = Drupal 7 Custom Module for digital.lib.utk.edu.
+package = University of Tennessee Libraries
+core = 7.x
+
+stylesheets[all][] = css/utk_lib_digital_custom.css

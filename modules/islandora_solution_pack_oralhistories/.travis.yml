@@ -1,0 +1,104 @@
+#islandora_solution_pack_oralhistories
+
+sudo: required
+dist: trusty
+language: php
+
+matrix:
+  include:
+   #5.3.3 Ubuntu Precise exceptions
+    - php: 5.3.3
+      dist: precise
+      env: FEDORA_VERSION="3.5"
+    - php: 5.3.3
+      dist: precise
+      env: FEDORA_VERSION="3.6.2"
+    - php: 5.3.3
+      dist: precise
+      env: FEDORA_VERSION="3.7.0"
+    - php: 5.3.3
+      dist: precise
+      env: FEDORA_VERSION="3.8.1"
+  allow_failures:
+    - php: 5.3.3
+      dist: precise
+      env: FEDORA_VERSION="3.5"
+    - php: 5.3.3
+      dist: precise
+      env: FEDORA_VERSION="3.6.2"
+    - php: 5.3.3
+      dist: precise
+      env: FEDORA_VERSION="3.7.0"
+    - php: 5.3.3
+      dist: precise
+      env: FEDORA_VERSION="3.8.1"
+
+php:
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+  - 7.1
+
+env:
+  - FEDORA_VERSION="3.5"
+  - FEDORA_VERSION="3.6.2"
+  - FEDORA_VERSION="3.7.0"
+  - FEDORA_VERSION="3.8.1"
+
+branches:
+  only:
+    - /^7.x/
+env:
+  - FEDORA_VERSION="3.5"
+  - FEDORA_VERSION="3.6.2"
+  - FEDORA_VERSION="3.7.0"
+  - FEDORA_VERSION="3.8.1"
+
+before_install:
+  - if [[ $(phpenv version-name) = "5.3.3" ]]; then composer config -g -- disable-tls true && composer config -g -- secure-http false; fi;
+  - cd $HOME
+  - git clone -b 7.x git://github.com/Islandora/islandora.git
+  - git clone -b 7.x git://github.com/Islandora/islandora_solution_pack_collection.git
+  - git clone -b 7.x git://github.com/Islandora/islandora_solution_pack_video.git
+  - git clone -b 7.x git://github.com/Islandora/islandora_solution_pack_audio.git
+  - git clone -b 7.x git://github.com/Islandora/islandora_solr_search.git
+  - git clone https://github.com/sprklinginfo/transcripts_ui.git
+  - git clone --branch 7.x-1.x https://git.drupal.org/project/ctools.git
+
+  - export ISLANDORA_DIR=$HOME/islandora
+  - $HOME/islandora/tests/scripts/travis_setup.sh
+  - cd $HOME/drupal-*
+
+  - ln -s $TRAVIS_BUILD_DIR sites/all/modules/islandora_solution_pack_oralhistories
+  - ln -s $HOME/islandora_solution_pack_collection sites/all/modules/islandora_solution_pack_collection
+  - ln -s $HOME/islandora_solution_pack_video sites/all/modules/islandora_solution_pack_video
+  - ln -s $HOME/islandora_solution_pack_audio sites/all/modules/islandora_solution_pack_audio
+  - ln -s $HOME/islandora_solr_search sites/all/modules/islandora_solr_search
+  - ln -s $HOME/transcripts_ui sites/all/modules/transcripts_ui
+  - ln -s $HOME/ctools sites/all/modules/ctools
+
+  - sudo sh $HOME/islandora_solution_pack_video/tests/scripts/ffmpeg-install.sh
+
+  - drush en --user=1 --yes islandora_oralhistories
+  - drush en --user=1 --yes islandora_basic_collection
+  - drush en --user=1 --yes islandora_video
+  - drush en --user=1 --yes islandora_audio
+  - drush en --user=1 --yes islandora_solr
+  - drush en --user=1 --yes transcripts_ui
+  - drush en --user=1 --yes ctools
+
+script:
+  #- $ISLANDORA_DIR/tests/scripts/travis_scripts.sh
+  #- ant -buildfile sites/all/modules/islandora_solution_pack_oralhistories/build.xml lint
+  - $ISLANDORA_DIR/tests/scripts/line_endings.sh sites/all/modules/islandora_solution_pack_oralhistories
+  #- drush coder-review --reviews=production,security,style,i18n,potx,sniffer islandora_basic_oralhistories
+  #- phpcpd --names *.module,*.inc,*.test sites/all/modules/islandora_solution_pack_oralhistories
+  # - drush test-run --uri=http://localhost:8081 "Islandora Oralhistories"
+
+#after_failure:
+#  - $ISLANDORA_DIR/tests/scripts/travis_after_failure.sh
+
+
+#notifications:
+#  irc: "irc.freenode.org#islandora"

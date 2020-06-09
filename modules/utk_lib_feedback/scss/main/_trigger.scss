@@ -1,0 +1,55 @@
+body.utk-feedback-modal {
+  .utk-lib-feedback-wrapper {
+    display: none;
+  }
+}
+
+.utk-lib-feedback-wrapper {
+  position: fixed;
+  right: $golden-ratio-3;
+  bottom: $golden-ratio-3;
+  z-index: 997;
+
+  a.utk-lib-feedback-trigger,
+  a.utk-lib-feedback-trigger:visited {
+    display: block;
+    font-family: $sans;
+    background-color: $offwhite;
+    color: $smokey !important;
+    height: $golden-ratio-4;
+    line-height: $golden-ratio-4;
+    border-radius: $golden-ratio-4;
+    padding: 0 $golden-ratio-4 0 $golden-ratio-2;
+    font-size: $type-2;
+    font-weight: 700;
+    width: auto;
+    box-shadow: $box-shadow;
+    position: relative;
+    text-decoration: none !important;
+    transition: $transition-all;
+
+    &:hover,
+    &:focus {
+      color: $gray;
+      box-shadow: $box-shadow-hover;
+    }
+
+    .utk-lib-icon-wrapper {
+      position: absolute;
+      right: 9px;
+      top: 9px;
+      height: $golden-ratio-3;
+      width: $golden-ratio-3;
+      border-radius: $golden-ratio-3;
+      text-align: center;
+      line-height: $golden-ratio-3;
+      color: $white;
+      background-color: $globe;
+
+      > svg {
+        height: $golden-ratio-1;
+        padding-top: 5px;
+      }
+    }
+  }
+}
