@@ -1,0 +1,226 @@
+<?php
+
+/**
+ * @file
+ * The main module file.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function islandora_get_csv_menu() {
+  $items['admin/islandora/tools/islandora_get_csv'] = array(
+    'title' => 'Islandora Get Metadata CSV',
+    'description' => 'Configure the Islandora Get Metadata CSV module.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('islandora_get_csv_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['islandora_get_csv_render_sample_solr_document'] = array(
+    'title' => 'Random Solr document',
+    'page callback' => 'islandora_get_csv_render_sample_solr_doc',
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+/**
+ * Admin form definition.
+ */
+function islandora_get_csv_admin_settings() {
+  $form = islandora_get_csv_form();
+  $form['islandora_get_csv_solr_server'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Solr server settings'),
+    '#collapsible' => FALSE,
+  );
+  $form['islandora_get_csv_solr_server']['islandora_get_csv_protocol'] = array(
+    '#type' => 'select',
+    '#options' => array('http://' => 'http', 'https://' => 'https', '' => 'none'),
+    '#title' => t('HTTP protocol'),
+    '#default_value' => variable_get('islandora_get_csv_protocol', 'http'),
+    '#description' => t("This module gets your Solr server's address from the Islandora Solr Search module, but you need to indicate whether it uses 'http' or 'https'. Use 'none' if your Solr Search module already includes the protocol."),
+  );
+  return system_settings_form($form);
+}
+
+/**
+ * Form definition.
+ *
+ * Used in both the admin settings form and in the collection admin submenu
+ * where the CSV is generated.
+ */
+function islandora_get_csv_form() {
+  $form = array();
+  $form['islandora_get_csv_collection_limiter'] = array(
+    '#type' => 'select',
+    '#options' => array('is member of' => 'Is Member Of', 'ancestors' => 'Ancestors'),
+    '#title' => t('Collection limiter'),
+    '#description' => t("If you have \"ancestors_ms\" indexed, choose \"Ancestors\" to include child objects " . 
+      "such as pages in your CSV. Otherwise, select \"Is Member Of\"."),
+    '#default_value' => variable_get('islandora_get_csv_collection_limiter', 'is member of'),
+    '#weight' => -10,
+  );
+  $form['islandora_get_csv_collection_membership'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Collection membership field'),
+    '#default_value' => variable_get('islandora_get_csv_collection_membership', 'RELS_EXT_isMemberOfCollection_uri_t'),
+    '#description' => t("Solr field that contains collection PIDs."),
+  );
+  $form['islandora_get_csv_field_pattern'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Solr field pattern'),
+    '#default_value' => variable_get('islandora_get_csv_field_pattern', 'mods_*'),
+    '#description' => t("Pattern for use for matching Solr field names to include in the CSV file. Must be compatible with Solr's 'fl' parameter. For example, 'mods_* will filter for all fields derived from MODS; dc.* will filter for all DC fields."),
+  );
+  $form['islandora_get_csv_field_suffix_list'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Solr field types to include'),
+    '#default_value' => variable_get('islandora_get_csv_field_suffix_list', '_s,_ms'),
+    '#description' => t("A comma-separated list of Solr field type suffixes to include in the CSV file, including the leading '_'."),
+  );
+  $form['islandora_get_csv_additional_fields'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Solr fields to include'),
+    '#default_value' => variable_get('islandora_get_csv_additional_fields', 'PID,RELS_EXT_hasModel_uri_s'),
+    '#description' => t('A comma-separated list of specific Solr fields to include in the CSV file. These fields are included in addition to the fields filtered by the patterns in the above two settings.'),
+  );
+  $form['islandora_get_csv_omit_fields'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Solr fields to exclude'),
+    '#default_value' => variable_get('islandora_get_csv_omit_fields', 'mods_subject_descendants_all_ms,mods_titleInfo_title_all_ms'),
+    '#description' => t("A comma-separated list of specific Solr fields to exclude from the CSV file."),
+  );
+  $form['islandora_get_csv_remove_single_value_fields'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Remove single-value fields where applicable'),
+    '#default_value' => variable_get('islandora_get_csv_remove_single_value_fields', TRUE),
+    '#description' => t("Many fields in Islandora's Solr index have both single- and multivalue equivalents. Checking this will remove single-value fields from the CSV file that have multivalue equivalents, for example 'mods_titleInfo_title_s' if 'mods_titleInfo_title_ms' exists."),
+  );
+
+  return $form;
+}
+
+/**
+ * Implements hook_islandora_basic_collection_build_manage_object().
+ */
+function islandora_get_csv_islandora_basic_collection_build_manage_object(array $form_state, AbstractObject $object) {
+  $form_state['manage_collection_object']['get_csv'] = array(
+    '#id' => 'generate-csv',
+    '#group' => 'manage_object',
+    '#access' => user_access('manage collection policy'),
+    '#type' => 'fieldset',
+    '#title' => t('Generate CSV file of metadata used in this collection'),
+    'form' => drupal_get_form('islandora_get_csv_generate_list', $object),
+  );
+  return $form_state;
+}
+
+/**
+ * Form definition.
+ */
+function islandora_get_csv_generate_list() {
+  module_load_include('inc', 'islandora_get_csv', 'includes/utilities');
+  $collection_pid = arg(2);
+  $generate_list_form = array();
+  $generate_list_form['islandora_get_csv_generate_list_description'] = array(
+    '#markup' => t('The CSV file will contain one record per object. Change options if you do not want to use defaults.'),
+    '#prefix' => '<div>',
+    '#suffix' => '</div>',
+    '#weight' => -10,
+  );
+  $generate_list_form['islandora_get_csv'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Options'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#weight' => -5,
+  );
+  $generate_list_form['islandora_get_csv']['islandora_get_csv_random_solr_doc_link'] = array(
+    '#markup' => l(t('View the Solr document for a random member of this collection'), 'islandora_get_csv_render_sample_solr_document', array('attributes' => array('target' => '_blank'))), 
+    '#prefix' => '<div><p>&nbsp;',
+    '#suffix' => ' ' . t('(Will open in new window.)') . '</p></div>',
+  );
+  $common_form = islandora_get_csv_form();
+
+  $common_form['islandora_get_csv_collection_limiter']['#access'] = FALSE;
+  if (variable_get('islandora_get_csv_collection_limiter', 'is member of') == 'ancestors') {
+    if (islandora_get_csv_check_for_ancesors($collection_pid)) {
+      $generate_list_form['islandora_get_csv']['islandora_get_csv_include_descendents'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Include all child objects, including pages, child items, and members of subcollections.'),
+        '#default_value' => TRUE,
+        '#description' => t("If unchecked, only direct child members of this collection will be included in the CSV."),
+      );
+    }
+  }
+
+  foreach ($common_form as $element_name => $element_members) {
+    $generate_list_form['islandora_get_csv'][$element_name] = $element_members;
+  }
+
+  $generate_list_form['islandora_get_csv_show_query'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show Solr query'),
+    '#default_value' => FALSE,
+    '#description' => t("Useful for debugging."),
+  );
+
+  $generate_list_form['islandora_get_csv_generate_list_submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Generate metadata CSV'),
+    '#submit' => array('islandora_get_csv_generate_list_submit_callback'),
+  );
+  return $generate_list_form;
+}
+
+/**
+ * Form submit callback.
+ */
+function islandora_get_csv_generate_list_submit_callback($form, $form_state) {
+  $collection_pid = arg(2);
+  if ($link = islandora_get_csv_write_csv_from_gui($collection_pid, $form_state['values'])) {
+    drupal_set_message(t("!link.",
+      array('!link' => $link)));
+  }
+}
+
+/**
+ * Generates the list and writes it to the public files directory.
+ *
+ * @param string $pid
+ *   The collection's PID.
+ * @param array $options
+ *   The $form['values'].
+ *
+ * @return string|bool
+ *   The rendered link to the output filei or FALSE if there was a problem.
+ */
+function islandora_get_csv_write_csv_from_gui($pid, $options) {
+  $pid_for_filename = preg_replace('/:/', '_', $pid);
+  $output_dir = variable_get('file_public_path', conf_path() . '/files');
+  $output_file_path = $output_dir . '/' . $pid_for_filename . '.csv';
+  if (file_exists($output_file_path)) {
+    unlink($output_file_path);
+  }
+
+  module_load_include('inc', 'islandora_get_csv', 'includes/utilities');
+  if (!$metadata_csv = islandora_get_csv_query_solr($pid, $options)) {
+    return FALSE;
+  }
+  file_put_contents($output_file_path, $metadata_csv);
+  // Remove the path to the files directory since it's added by file_create_url().
+  $relative_file_path = preg_replace("#$output_dir#", '', $output_file_path);
+  $download_path = file_create_url(file_build_uri($relative_file_path));
+  return l(t('Download your metadata CSV'), $download_path);
+}
+
+
+function islandora_get_csv_render_sample_solr_doc() {
+  $collection_pid = arg(2);
+  module_load_include('inc', 'islandora_get_csv', 'includes/utilities');
+  $sample_doc = islandora_get_csv_get_sample_solr_doc($collection_pid);
+  return $sample_doc;
+}

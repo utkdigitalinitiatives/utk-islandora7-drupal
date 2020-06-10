@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * This file contains all install related hooks.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function islandora_get_csv_uninstall() {
+  module_load_include('inc', 'islandora_get_csv', 'includes/utilities');
+  $variables = islandora_get_csv_system_variables();
+  array_walk($variables, 'variable_del');
+}
