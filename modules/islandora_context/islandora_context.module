@@ -1,0 +1,641 @@
+<?php
+
+/**
+ * @file
+ * Defines all the hooks this module implements.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function islandora_context_theme() {
+  $items = array();
+  $items['islandora_context_reaction_inserted_message'] = array(
+    'variables' => array('message_text' => NULL),
+    'path' => drupal_get_path('module', 'islandora_context') . '/theme',
+    'template' => 'islandora-context-reaction-inserted-message',
+    'file' => 'islandora_context_theme.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function islandora_context_ctools_plugin_api($module, $api) {
+  if ($module == 'context' && $api == 'plugins') {
+    return array('version' => 3);
+  }
+}
+
+/**
+ * Implements hook_context_plugins().
+ */
+function islandora_context_context_plugins() {
+  $plugins = array();
+  $plugins['islandora_context_condition_is_islandora_object'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_condition_is_islandora_object.inc',
+      'class' => 'IslandoraContextConditionIsIslandoraObject',
+      'parent' => 'context_condition',
+    ),
+  );
+  $plugins['islandora_context_condition_ds_mimetype'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_condition_ds_mimetype.inc',
+      'class' => 'IslandoraContextConditionDsMimetype',
+      'parent' => 'context_condition',
+    ),
+  );
+  $plugins['islandora_context_condition_namespace'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_condition_namespace.inc',
+      'class' => 'IslandoraContextConditionNamespace',
+      'parent' => 'context_condition',
+    ),
+  );
+  $plugins['islandora_context_condition_collection_member'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_condition_collection_member.inc',
+      'class' => 'IslandoraContextConditionCollectionMember',
+      'parent' => 'context_condition',
+    ),
+  );
+  $plugins['islandora_context_condition_collection_is_empty'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_condition_collection_is_empty.inc',
+      'class' => 'IslandoraContextConditionCollectionIsEmpty',
+      'parent' => 'context_condition',
+    ),
+  );
+  $plugins['islandora_context_condition_content_models'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_condition_cmodels.inc',
+      'class' => 'IslandoraContextConditionContentModels',
+      'parent' => 'context_condition',
+    ),
+  );
+  $plugins['islandora_context_condition_keyword_in_datastream'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_condition_keyword_in_datastream.inc',
+      'class' => 'IslandoraContextConditionKeywordInDatastream',
+      'parent' => 'context_condition',
+    ),
+  );
+  $plugins['islandora_context_condition_relationship'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_condition_relationship.inc',
+      'class' => 'IslandoraContextConditionRelationship',
+      'parent' => 'context_condition',
+    ),
+  );
+  $plugins['islandora_context_condition_rdf_requested'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_condition_rdf_requested.inc',
+      'class' => 'IslandoraContextConditionRdfRequested',
+      'parent' => 'context_condition',
+    ),
+  );
+
+  $plugins['islandora_context_reaction_insert_text'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_reaction_insert_text.inc',
+      'class' => 'IslandoraContextReactionInsertText',
+      'parent' => 'context_reaction',
+    ),
+  );
+  if (module_exists('islandora_solr_metadata')) {
+    $plugins['islandora_context_reaction_display_solr_metadata'] = array(
+      'handler' => array(
+        'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+        'file' => 'islandora_context_reaction_display_solr_metadata.inc',
+        'class' => 'IslandoraContextReactionDisplaySolrMetadata',
+        'parent' => 'context_reaction',
+      ),
+    );
+    $plugins['islandora_context_reaction_display_solr_metadata_description'] = array(
+      'handler' => array(
+        'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+        'file' => 'islandora_context_reaction_display_solr_metadata_description.inc',
+        'class' => 'IslandoraContextReactionDisplaySolrMetadataDescription',
+        'parent' => 'context_reaction',
+      ),
+    );
+  }
+  $plugins['islandora_context_reaction_return_rdf'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_reaction_return_rdf.inc',
+      'class' => 'IslandoraContextReactionReturnRdf',
+      'parent' => 'context_reaction',
+    ),
+  );
+  $plugins['islandora_context_reaction_hide_metadata_details'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_reaction_hide_metadata_details.inc',
+      'class' => 'IslandoraContextReactionHideMetadataDetails',
+      'parent' => 'context_reaction',
+    ),
+  );
+  $plugins['islandora_context_reaction_hide_metadata_description'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_reaction_hide_metadata_description.inc',
+      'class' => 'IslandoraContextReactionHideMetadataDescription',
+      'parent' => 'context_reaction',
+    ),
+  );
+  $plugins['islandora_context_reaction_hide_in_collections'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_reaction_hide_in_collections.inc',
+      'class' => 'IslandoraContextReactionHideInCollections',
+      'parent' => 'context_reaction',
+    ),
+  );
+  $plugins['islandora_context_reaction_restrict_by_ip'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_reaction_restrict_by_ip.inc',
+      'class' => 'IslandoraContextReactionRestrictByIp',
+      'parent' => 'context_reaction',
+    ),
+  );
+  $plugins['islandora_context_reaction_display_parent_metadata'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_reaction_display_parent_metadata.inc',
+      'class' => 'IslandoraContextReactionDisplayParentMetadata',
+      'parent' => 'context_reaction',
+    ),
+  );
+  $plugins['islandora_context_reaction_use_viewer'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_reaction_use_viewer.inc',
+      'class' => 'IslandoraContextReactionUseViewer',
+      'parent' => 'context_reaction',
+    ),
+  $plugins['islandora_context_reaction_filter_derivatives'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'islandora_context') . '/plugins',
+      'file' => 'islandora_context_reaction_filter_derivatives.inc',
+      'class' => 'IslandoraContextReactionFilterDerivatives',
+      'parent' => 'context_reaction',
+    ),
+  ));
+  return $plugins;
+}
+
+/**
+ * Implements hook_context_registry().
+ */
+function islandora_context_context_registry() {
+  return array(
+    'conditions' => array(
+      'islandora_context_condition_is_islandora_object' => array(
+        'title' => t('Is Islandora Object'),
+        'description' => t("Choose this condition if you want the context to apply to all Islandora objects."),
+        'plugin' => 'islandora_context_condition_is_islandora_object',
+      ),
+      'islandora_context_condition_ds_mimetype' => array(
+        'title' => t('Islandora Datastream has Mime Type'),
+        'description' => t("Choose this condition if you want to detect a datastream's Mime Type."),
+        'plugin' => 'islandora_context_condition_ds_mimetype',
+      ),
+      'islandora_context_condition_namespace' => array(
+        'title' => t('Islandora PID Namespace'),
+        'description' => t("Choose this condition if you want to detect an object's PID namespace."),
+        'plugin' => 'islandora_context_condition_namespace',
+      ),
+      'islandora_context_condition_collection_member' => array(
+        'title' => t('Islandora Collection Membership'),
+        'description' => t("Choose this condition if you want to detect an object's membership in a collection."),
+        'plugin' => 'islandora_context_condition_collection_member',
+      ),
+      'islandora_context_condition_collection_is_empty' => array(
+        'title' => t('Islandora Collection Is Empty'),
+        'description' => t("Choose this condition if you want to detect whether a collection object is empty (has no members)."),
+        'plugin' => 'islandora_context_condition_collection_is_empty',
+      ),
+      'islandora_context_condition_content_models' => array(
+        'title' => t('Islandora Content Models'),
+        'description' => t("Choose this condition if you want to detect an object's content models."),
+        'plugin' => 'islandora_context_condition_content_models',
+      ),
+      'islandora_context_condition_keyword_in_datastream' => array(
+        'title' => t('Islandora Keyword in Datastream'),
+        'description' => t("Choose this condition if you want to detect keywords in an XML or text datastream."),
+        'plugin' => 'islandora_context_condition_keyword_in_datastream',
+      ),
+      'islandora_context_condition_relationship' => array(
+        'title' => t('Islandora Relationship'),
+        'description' => t("Choose this condition if you want to detect a particluar relationship defined in the object's RELS-EXT."),
+        'plugin' => 'islandora_context_condition_relationship',
+      ),
+      'islandora_context_condition_rdf_requested' => array(
+        'title' => t('RDF has been requested'),
+        'description' => t("Choose this condition if you want to detect if a request has been made for RDF XML."),
+        'plugin' => 'islandora_context_condition_rdf_requested',
+      ),
+    ),
+    'reactions' => array(
+      'islandora_context_reaction_insert_text' => array(
+        'title' => t("Insert text into Islandora object's display"),
+        'description' => t("Insert text into an object's display."),
+        'plugin' => 'islandora_context_reaction_insert_text',
+      ),
+      'islandora_context_reaction_display_solr_metadata' => array(
+        'title' => t("Use an Islandora Solr Metadata configuration"),
+        'description' => t("Display a Solr Metadata configuration."),
+        'plugin' => 'islandora_context_reaction_display_solr_metadata',
+      ),
+      'islandora_context_reaction_display_solr_metadata_description' => array(
+        'title' => t("Use the corresponding Islandora Solr Metadata description"),
+        'description' => t("Display a description element corresponding to the selected Solr Metadata configuration."),
+        'plugin' => 'islandora_context_reaction_display_solr_metadata_description',
+      ),
+      'islandora_context_reaction_return_rdf' => array(
+        'title' => t("Return RDF for an Islandora object"),
+        'description' => t("Returns RDF representation of an Islandora object."),
+        'plugin' => 'islandora_context_reaction_return_rdf',
+      ),
+      'islandora_context_reaction_hide_metadata_details' => array(
+        'title' => t("Hide an object's metadata \"Details\" div"),
+        'description' => t("Hides the metadata \"Details\" div of an Islandora object."),
+        'plugin' => 'islandora_context_reaction_hide_metadata_details',
+      ),
+      'islandora_context_reaction_hide_metadata_description' => array(
+        'title' => t("Hide an object's metadata \"Description\" markup"),
+        'description' => t("Hides the metadata \"Description\" markup of an Islandora object."),
+        'plugin' => 'islandora_context_reaction_hide_metadata_description',
+      ),
+      'islandora_context_reaction_hide_in_collections' => array(
+        'title' => t("Hide an object's \"In collections\" markup"),
+        'description' => t("Hides the metadata \"In collections\" markup of an Islandora object."),
+        'plugin' => 'islandora_context_reaction_hide_in_collections',
+      ),
+      'islandora_context_reaction_restrict_by_ip' => array(
+        'title' => t("User's IP address"),
+        'description' => t("Restrict access to an Islandora object based on the user's IP address."),
+        'plugin' => 'islandora_context_reaction_restrict_by_ip',
+      ),
+      'islandora_context_reaction_display_parent_metadata' => array(
+        'title' => t("Display the metadata of an object's compound parent"),
+        'description' => t("If an object is a child in a compound, display its parent's metadata."),
+        'plugin' => 'islandora_context_reaction_display_parent_metadata',
+      ),
+      'islandora_context_reaction_use_viewer' => array(
+        'title' => t("Use an Islandora viewer"),
+        'description' => t("Use an Islandora viewer."),
+        'plugin' => 'islandora_context_reaction_use_viewer',
+      ),
+      'islandora_context_reaction_filter_derivatives' => array(
+        'title' => t("Filter generation of Islandora derivatives"),
+        'description' => t("Determine which Islandora derivatives are generated."),
+        'plugin' => 'islandora_context_reaction_filter_derivatives',
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_islandora_view_object().
+ */
+function islandora_context_islandora_view_object(AbstractObject $object) {
+  // Check for conditions that we want to set when an object is viewed.
+  if ($plugin = context_get_plugin('condition', 'islandora_context_condition_is_islandora_object')) {
+    $plugin->execute($object);
+  }
+  if ($plugin = context_get_plugin('condition', 'islandora_context_condition_ds_mimetype')) {
+    $plugin->execute($object);
+  }
+  if ($plugin = context_get_plugin('condition', 'islandora_context_condition_collection_member')) {
+    $plugin->execute($object);
+  }
+  if ($plugin = context_get_plugin('condition', 'islandora_context_condition_collection_is_empty')) {
+    $plugin->execute($object);
+  }
+  if ($plugin = context_get_plugin('condition', 'islandora_context_condition_content_models')) {
+    $plugin->execute($object);
+  }
+  if ($plugin = context_get_plugin('condition', 'islandora_context_condition_keyword_in_datastream')) {
+    $plugin->execute($object);
+  }
+  if ($plugin = context_get_plugin('condition', 'islandora_context_condition_relationship')) {
+    $plugin->execute($object);
+  }
+  if ($plugin = context_get_plugin('condition', 'islandora_context_condition_rdf_requested')) {
+    $plugin->execute($object);
+  }
+  // We call this plugin here since redirection, in this case to a proxy URL, has to happen
+  // in this hook. Access to the object is handled in hook_islandora_object_access().
+  if ($plugin = context_get_plugin('reaction', 'islandora_context_reaction_restrict_by_ip')) {
+    $redirect = $plugin->execute($object);
+    if (is_array($redirect)) {
+      global $base_url;
+      $redirect_target = $redirect[0] . $base_url . '/islandora/object/' . $object->id;
+      drupal_goto($redirect_target);
+    }
+  }
+
+  return array();
+}
+
+/**
+ * Implements hook_islandora_view_object_alter().
+ */
+function islandora_context_islandora_view_object_alter(&$object, &$rendered) {
+  // Check for reactions that alter the output of an object's display output.
+  if ($plugin = context_get_plugin('reaction', 'islandora_context_reaction_return_rdf')) {
+    $plugin->execute($object);
+  }
+  if ($plugin = context_get_plugin('reaction', 'islandora_context_reaction_display_parent_metadata')) {
+    drupal_add_js('misc/form.js');
+    drupal_add_js('misc/collapse.js');
+    if ($markup = $plugin->execute($object)) {
+      if (isset($rendered[NULL]['#markup'])) {
+        $rendered[NULL]['#markup'] = $rendered[NULL]['#markup'] . $markup;
+      }
+      else {
+        // To accommodate Binary Solution Pack content model objects.
+        $rendered[NULL][] = $markup;
+      }
+    }
+  }
+  if ($plugin = context_get_plugin('reaction', 'islandora_context_reaction_insert_text')) {
+    if ($markup = $plugin->execute()) {
+      if (isset($rendered[NULL])) {
+        $rendered[NULL]['#markup'] = $rendered[NULL]['#markup'] . $markup['#markup'];
+      }
+    }
+  }
+  if ($plugin = context_get_plugin('reaction', 'islandora_context_reaction_hide_metadata_details')) {
+    $plugin->execute($object);
+  }
+  if ($plugin = context_get_plugin('reaction', 'islandora_context_reaction_hide_metadata_description')) {
+    $plugin->execute($object);
+  }
+  if ($plugin = context_get_plugin('reaction', 'islandora_context_reaction_hide_in_collections')) {
+    $plugin->execute($object);
+  }
+}
+
+/**
+ * Implements hook_islandora_object_access().
+ */
+function islandora_context_islandora_object_access($op, $object, $user) {
+  // This condition needs to be set as early as possible in the object
+  // access lifecycle.
+  if ($plugin = context_get_plugin('condition', 'islandora_context_condition_namespace')) {
+    $plugin->execute($object->id);
+  }
+
+  // Deine ISLANDORA_REST_DATASTREAM_GET_PERM if it is not already defined.
+  if (!defined('ISLANDORA_REST_OBJECT_GET_PERM')) {
+    define('ISLANDORA_REST_OBJECT_GET_PERM', ISLANDORA_VIEW_OBJECTS);
+  }
+
+  if ($op == ISLANDORA_VIEW_OBJECTS || $op == ISLANDORA_REST_OBJECT_GET_PERM) {
+    if ($plugin = context_get_plugin('reaction', 'islandora_context_reaction_restrict_by_ip')) {
+      $current_path = current_path();
+      $ip_is_allowed = $plugin->execute();
+
+      // Handle REST API requests.
+      if (preg_match('#islandora/rest/v1/object#', $current_path)) {
+        // Provide access to TN datastreams to everyone.
+        if (preg_match('#/datastream/TN#', $current_path)) {
+          return TRUE;
+        }
+        else {
+          if ($ip_is_allowed === FALSE || is_array($ip_is_allowed)) {
+            return FALSE;
+          }
+        }
+      }
+
+      // Handle non-REST requests, which need to delegate redirecting to a proxy
+      // hook_islandora_view_object().
+      if (is_array($ip_is_allowed)) {
+        // First member will be the redirect URL, and second, if present,
+        // will be a boolean indicating whether to append the object's URL
+        // to the redirect URL. If this is the case, retun NULL so
+        // hook_islandora_view_object() can redirect the user to the proxy URL.
+        if (count($ip_is_allowed) == 1) {
+          if (is_array($ip_is_allowed)) {
+            return NULL;
+          }
+          else {
+            return FALSE;
+          }
+        }
+        else {
+          // Make an exception to the redirect for thumbnails, since
+          // they should be viewable by everyone.
+          if (!preg_match('#datastream/TN/view#', $current_path)) {
+            return NULL;
+          }
+        }
+        return NULL;
+      }
+      elseif ($ip_is_allowed) {
+        return TRUE;
+      }
+      elseif (is_null($ip_is_allowed)) {
+        return NULL;
+      }
+      else {
+        return FALSE;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_islandora_datastream_access().
+ */
+function islandora_context_islandora_datastream_access($op, $datastream, $user) {
+  // Thumbnails should be viewable by everyone, including REST clients.
+  // Counterintuitively, ISLANDORA_REST_DATASTREAM_GET_PERM is the correct
+  // permission here and in the next check for requests via the islandora_rest
+  // API; TNs remain viewable, other datastreams are correctly restricted.
+  // First, we need to handle the case where ISLANDORA_REST_DATASTREAM_GET_PERM
+  // is not defined because the REST module is not enabled.
+  if (!defined('ISLANDORA_REST_DATASTREAM_GET_PERM')) {
+    define('ISLANDORA_REST_DATASTREAM_GET_PERM', ISLANDORA_VIEW_OBJECTS);
+  }
+
+  if (($op == ISLANDORA_VIEW_OBJECTS || $op == ISLANDORA_REST_DATASTREAM_GET_PERM) && ($datastream->id == 'TN')) {
+    return TRUE;
+  }
+
+  // This condition needs to be set as early as possible in the datastream
+  // access lifecycle.
+  if ($plugin = context_get_plugin('condition', 'islandora_context_condition_namespace')) {
+    $parent_object = $datastream->parent;
+    $plugin->execute($parent_object->id);
+  }
+
+  // Assumption here is that if a user is not allowed to view an object, they
+  // are not allowed to view any of the object's datastreams other than TN.
+  if ($op == ISLANDORA_VIEW_OBJECTS || $op == ISLANDORA_REST_DATASTREAM_GET_PERM) {
+    if ($plugin = context_get_plugin('reaction', 'islandora_context_reaction_restrict_by_ip')) {
+      $current_path = current_path();
+      $ip_is_allowed = $plugin->execute();
+
+      // Handle REST API requests.
+      if (preg_match('#islandora/rest/v1/object/#', $current_path)) {
+        if ($ip_is_allowed === FALSE || is_array($ip_is_allowed)) {
+          return FALSE;
+        }
+      }
+
+      // Handle non-REST requests.
+      if ($ip_is_allowed) {
+        return TRUE;
+      }
+      elseif (is_null($ip_is_allowed)) {
+        return NULL;
+      }
+      else {
+        return FALSE;
+      }
+
+    }
+  }
+}
+
+/**
+ * Implements hook_islandora_metadata_display_info().
+ */
+function islandora_context_islandora_metadata_display_info() {
+  return array(
+    'islandora_context' => array(
+      'label' => t('Islandora Solr Metadata managed by the Islandora Context module'),
+      'description' => t('Context-sensitive metadata display driven by the Islandora Solr Search module'),
+      'metadata callback' => 'islandora_context_solr_metadata_display_callback',
+      'description callback' => 'islandora_context_solr_metadata_description_callback',
+      'configuration' => 'admin/islandora/search/islandora_solr/metadata',
+    ),
+  );
+}
+
+/**
+ * Metadata display callback for rendering metadata from Solr.
+ *
+ * @param AbstractObject $object
+ *   An AbstractObject representing an object within Fedora.
+ * @param bool $print
+ *   Whether this is for printing purposes.
+ *
+ * @return string
+ *   Markup representing the metadata display pulled from Solr.
+ */
+function islandora_context_solr_metadata_display_callback(AbstractObject $object, $print = FALSE) {
+  if ($plugin = context_get_plugin('reaction', 'islandora_context_reaction_display_solr_metadata')) {
+    if ($markup = $plugin->execute($object)) {
+      return $markup;
+    }
+    else {
+      return islandora_solr_metadata_display_callback($object, $print);
+    }
+  }
+}
+
+/**
+ * Metadata display callback for rendering metadata from Solr.
+ *
+ * @param AbstractObject $object
+ *   An AbstractObject representing an object within Fedora.
+ *
+ * @return string
+ *   Markup representing the metadata display pulled from Solr.
+ */
+function islandora_context_solr_metadata_description_callback(AbstractObject $object) {
+  if ($plugin = context_get_plugin('reaction', 'islandora_context_reaction_display_solr_metadata_description')) {
+    if ($markup = $plugin->execute($object)) {
+      return $markup;
+    }
+    else {
+      return islandora_solr_metadata_description_callback($object);
+    }
+  }
+}
+
+/**
+ * Implements hook_islandora_derivative_alter().
+ *
+ * This hook is only fired during derivative generation, so we need to use
+ * it as the integration point for Context conditions and the reaction.
+ * Integrating the reaction and conditions in the same hook is not typical.
+ */
+function islandora_context_islandora_derivative_alter(&$derivatives, AbstractObject $object) {
+  // Define conditions that can trigger the reacion.
+  if ($plugin = context_get_plugin('condition', 'islandora_context_condition_is_islandora_object')) {
+    $plugin->execute($object);
+  }
+  if ($plugin = context_get_plugin('condition', 'islandora_context_condition_collection_member')) {
+    $plugin->execute($object);
+  }
+  if ($plugin = context_get_plugin('condition', 'islandora_context_condition_content_models')) {
+    $plugin->execute($object);
+  }
+  if ($plugin = context_get_plugin('condition', 'islandora_context_condition_namespace')) {
+    $plugin->execute($object->id);
+  }
+
+  // Implement the reaction.
+  if ($plugin = context_get_plugin('reaction', 'islandora_context_reaction_filter_derivatives')) {
+    $filter_settings = $plugin->execute();
+    if (!isset($filter_settings['action'])) {
+      $filter_settings['action'] = NULL;
+    }
+    if ($filter_settings['action'] == 'include') {
+      foreach ($derivatives as $key => $derivative) {
+        if (!in_array($derivative['destination_dsid'], $filter_settings['dsids'])) {
+          unset($derivatives[$key]);
+        }
+      }
+    }
+    if ($filter_settings['action'] == 'exclude') {
+      foreach ($derivatives as $key => $derivative) {
+        if (in_array($derivative['destination_dsid'], $filter_settings['dsids'])) {
+          unset($derivatives[$key]);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function islandora_context_form_islandora_solr_metadata_config_form_alter(&$form, &$form_state, $form_id) {
+  $note = t("If you want to use a content model with a Display configuration triggered by Islandora Context, you need to create an 'Islandora Content Models' Context condition. The content model defined here is ignored.");
+  $form['islandora_solr_metadata_cmodels']['table_wrapper']['cmodel_options']['#description'] = $note;
+}
+
+/**
+ * Preprocessor for theme('islandora_basic_image').
+ *
+ * Other content models to come....
+ */
+function islandora_context_preprocess_islandora_basic_image(&$vars) {
+  $islandora_object = $vars['islandora_object'];
+  if ($plugin = context_get_plugin('reaction', 'islandora_context_reaction_use_viewer')) {
+    if ($viewer = $plugin->execute($islandora_object)) {
+      $vars['islandora_content'] = $viewer;
+    }
+  }
+}
