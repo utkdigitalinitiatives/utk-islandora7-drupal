@@ -18,9 +18,12 @@ function utk_context_and_blocks_context_default_contexts() {
   $context->description = 'Dynamic Banner for All Collections';
   $context->tag = 'collection';
   $context->conditions = array(
-    'path' => array(
+    'islandora_context_condition_is_islandora_object' => array(
       'values' => array(
-        'islandora/object' => 'islandora/object',
+        0 => TRUE,
+      ),
+      'options' => array(
+        'islandora_is_islandora_object_types' => 'collection',
       ),
     ),
   );
