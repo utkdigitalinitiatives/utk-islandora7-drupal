@@ -1,3 +1,4 @@
+# standard ignores
 .DS_Store
 .idea
 .idea/*
