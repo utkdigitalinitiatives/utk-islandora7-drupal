@@ -1,0 +1,17 @@
+name = Islandora Sample Content Generator
+description = "Generates and loads sample content into Islandora"
+package = Islandora Tools
+version = 7.x-dev
+core = 7.x
+php = 5.3
+dependencies[] = islandora
+dependencies[] = islandora_batch
+files[] = includes/utilities.inc
+files[] = includes/islandora_scg_base.inc
+files[] = includes/islandora_scg_basic_image.inc
+files[] = includes/islandora_scg_large_image.inc
+files[] = includes/islandora_scg_pdf.inc
+files[] = includes/islandora_scg_book.inc
+files[] = includes/islandora_scg_newspaper.inc
+files[] = includes/islandora_scg_newspaper_issue.inc
+files[] = includes/islandora_scg_collection.inc
