@@ -10,23 +10,40 @@ function utk_lib_digital_custom_block_info()
         'info' => t('Digital Collections Header'),
         'cache' => DRUPAL_NO_CACHE,
     );
-
     return $blocks;
 }
 
 function utk_lib_digital_custom_block_view($delta = '')
 {
-    $block = array();
-    switch ($delta) {
-        case 'utk_lib_digital_custom_header':
-            $block['content'] = utk_lib_digital_custom_header();
-            break;
-    }
+  module_load_include('inc', 'islandora', 'includes/utilities');
+  $parsed_request = explode('/', $_SERVER['REQUEST_URI']);
+  $pid = urldecode(end($parsed_request));
+  $object = islandora_object_load($pid);
+  $collection_models = islandora_basic_collection_get_collection_content_models();
+  $is_a_collection = (
+    (count(array_intersect($collection_models, $object->models)) > 0) &&
+    isset($object['COLLECTION_POLICY'])
+  );
+  $is_a_introduction = function(){
+    $length = strlen( $pid );
+    return substr( $pid, 0, $length ) === 'collections/*collection';
+  };
+  dpm($is_a_introduction);
+  $block = array();
 
+  if (!$is_a_collection) {
+    return $block;
+  } else {
+      switch ($delta) {
+          case 'utk_lib_digital_custom_header':
+              $block['content'] = utk_lib_digital_custom_header($pid);
+              break;
+      }
+    }
     return $block;
 }
 
-function utk_lib_digital_custom_header()
+function utk_lib_digital_custom_header($pidd)
 {
     return '
             <div class="utk-lib-digital--header">
@@ -43,22 +60,27 @@ function utk_lib_digital_custom_header()
                       </ul>
                   </div>
               </div>
-              <div class="utk-lib-digital--header--background"> ' . utk_lib_digital_custom_featured_image() . '</div>
+              <div class="utk-lib-digital--header--background"> ' . utk_lib_digital_custom_featured_image($pidd) . '</div>
             </div>
             ';
 }
 
-function utk_lib_digital_custom_featured_image()
+// function utk_lib_digital_custom_banner($pidd)
+// {
+//   return '
+//             <div class="content clearfix">
+//                <div id="banner-container"><a href="/collections/' . $pidd . '"><img title="' . $pidd . ' Collection Banner Image" alt="' . $pidd . ' Collection Banner Image" src="https://digital.lib.utk.edu/iiif/2/collections~islandora~object~' . $pidd . '~datastream~FEATURED~view/full/full/0/default.jpg" border="0" id="splash-logo"></a>
+//                </div>
+//             </div>
+//            ';
+// }
+
+function utk_lib_digital_custom_featured_image($islandora_pid)
 {
     $json = file_get_contents('https://www.lib.utk.edu/wp-json/dc/featured');
     $featured = json_decode($json);
-
-    $pid = $featured->data->PID;
     $alt = $featured->data->fgs_label_s;
-
-    $src = 'https://digital.lib.utk.edu/iiif/2/collections~islandora~object~' . $pid . '~datastream~FEATURED~view/full/322,/0/default.jpg';
-
+    $src = 'https://digital.lib.utk.edu/iiif/2/collections~islandora~object~' . $islandora_pid . '~datastream~FEATURED~view/full/322,/0/default.jpg';
     $output = '<img src="' . $src .'" alt="' . $alt .'" />';
-
     return $output;
 }
