@@ -7,11 +7,11 @@
 function utk_lib_digital_custom_block_info()
 {
     $blocks['utk_lib_digital_custom_header'] = array(
-        'info' => t('Digital Collections Header'),
+        'info' => t('UTK Digital Collections Header'),
         'cache' => DRUPAL_NO_CACHE,
     );
     $blocks['utk_lib_digital_custom_banner'] = array(
-        'info' => t('Digital Collections Banner'),
+        'info' => t('UTK Digital Collections Banner'),
         'cache' => DRUPAL_NO_CACHE,
     );
     return $blocks;
@@ -19,58 +19,48 @@ function utk_lib_digital_custom_block_info()
 
 function utk_lib_digital_custom_block_view($delta = '')
 {
-  module_load_include('inc', 'islandora', 'includes/utilities');
+    $block = array();
+    module_load_include('inc', 'islandora', 'includes/utilities');
+    $arrowmont = array("curriculum", "arrpgimg", "arrscrap", "arrsimple", "sturley", "3d");
+    $gsmrc = array("roth", "50yrcove", "colloquy", "webster", "kintner", "adams", "pcard00", "smhc", "rfj", "thompson", "wcc", "wderfilms", "derris");
 
-  $is_a_introduction = drupal_match_path(drupal_lookup_path('alias', current_path()), '*collection');
-  if (!$is_a_introduction) {
+    $is_a_introduction = drupal_match_path(drupal_lookup_path('alias', current_path()), '*collection');
     $parsed_request = explode('/', $_SERVER['REQUEST_URI']);
+
     $pid = urldecode(end($parsed_request));
-    $object = islandora_object_load($pid);
-    if ($object) {
-      $collection_models = islandora_basic_collection_get_collection_content_models();
-
-      $is_a_collection = (
-        (count(array_intersect($collection_models, $object->models)) > 0) &&
-        isset($object['COLLECTION_POLICY'])
-      );
+    $member_of = "";
+    // If not an introduction page determine the PID
+    if (!$is_a_introduction) {
+        $object = islandora_object_load($pid);
+        // If an object find the parent
+        if ($object) {
+            $member_of = utk_lib_digital_custom_parent($pid);
+        }
     } else {
-      $is_a_collection = 0;
+        // Remove the collection string from mugwumpcollection to mugwump
+        $pid = str_replace("collection", "", $pid);
+
+        // Determined if collection belongs to naming exception collections
+        if (in_array($pid, $arrowmont)) {
+            $pid = "arrowmont:" . $pid;
+        } elseif (in_array($pid, $gsmrc)) {
+            $pid = "gsmrc:" . $pid;
+        } else {
+            $pid = "collections:" . $pid;
+        }
+        $object = islandora_object_load($pid);
+        $member_of = utk_lib_digital_custom_parent($pid);
     }
-  }
-  else {
-    $pid = 'xxxxxz';
-  }
-
-  //
-  //
-  //
-
-  // WORKING
-  // $object->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOfCollection')[0]['object']['value'];
-
-  // if utk_lib_digital_custom_parent() doesn't exist in the $featured = json_decode($json); return
-  // then run against the parent object & ignore if "islandora:collections"
-  $member_of = utk_lib_digital_custom_parent($object);
-
-  //
-  //
-  //
-  //
-  //
-  //
-  $block = array();
-
-  if (!$is_a_collection || !$is_a_introduction) {
-    return $block;
-  } else {
-      switch ($delta) {
-          case 'utk_lib_digital_custom_header':
-              $block['content'] = utk_lib_digital_custom_header($pid);
-              break;
-          case 'utk_lib_digital_custom_banner':
-              $block['content'] = utk_lib_digital_custom_banner($pid);
-              break;
-      }
+    if ($member_of != "") {
+        // firing the 2 blocks
+        switch ($delta) {
+        case 'utk_lib_digital_custom_header':
+            $block['content'] = utk_lib_digital_custom_header($member_of);
+            break;
+        case 'utk_lib_digital_custom_banner':
+            $block['content'] = utk_lib_digital_custom_banner($member_of);
+            break;
+    }
     }
     return $block;
 }
@@ -99,9 +89,9 @@ function utk_lib_digital_custom_header($pidd)
 
 function utk_lib_digital_custom_banner($pidd)
 {
-  return '
+    return '
             <div class="content clearfix">
-               <div id="banner-container"><a href="/collections/' . $pidd . '"><img title="' . $pidd . ' Collection Banner Image" alt="' . $pidd . ' Collection Banner Image" src="https://digital.lib.utk.edu/iiif/2/collections~islandora~object~' . $pidd . '~datastream~FEATURED~view/full/full/0/default.jpg" border="0" id="splash-logo"></a>
+               <div id="banner-container"><a href="/collections/islandora/object/' . $pidd . '"><img title="' . $pidd . ' Collection Banner Image" alt="' . $pidd . ' Collection Banner Image" src="https://digital.lib.utk.edu/iiif/2/collections~islandora~object~' . $pidd . '~datastream~FEATURED~view/full/full/0/default.jpg" border="0" id="splash-logo"></a>
                </div>
             </div>
            ';
@@ -109,7 +99,7 @@ function utk_lib_digital_custom_banner($pidd)
 
 function utk_lib_digital_custom_featured_image($islandora_pid)
 {
-    $json = file_get_contents('https://www.lib.utk.edu/wp-json/dc/featured');
+    $json = file_get_contents('https://www.lib.utk.edu/wp-json/dc/pid/' . $islandora_pid);
     $featured = json_decode($json);
     $alt = $featured->data->fgs_label_s;
     $src = 'https://digital.lib.utk.edu/iiif/2/collections~islandora~object~' . $islandora_pid . '~datastream~FEATURED~view/full/322,/0/default.jpg';
@@ -117,6 +107,50 @@ function utk_lib_digital_custom_featured_image($islandora_pid)
     return $output;
 }
 
-function utk_lib_digital_custom_parent($object_to_check) {
+function utk_lib_digital_custom_parent($pid_to_check)
+{
+    $ismemberofcollection = "";
+    module_load_include('inc', 'islandora', 'includes/utilities');
+    // Handle errors when fetching the JSON from WP site.
+    set_error_handler(
+      function ($severity, $message, $file, $line) {
+          throw new ErrorException($message, $severity, $severity, $file, $line);
+      }
+  );
 
+    $object_to_check = islandora_object_load($pid_to_check);
+
+    if ($object_to_check) {
+        // Wrapping in a try catch to fetch parent recursively
+        try {
+            $json = file_get_contents('https://www.lib.utk.edu/wp-json/dc/pid/' . $pid_to_check);
+            $json_check = json_decode($json);
+            if ( json_decode($json) === null ) {
+               throw new Exception('JSON is empty');
+              dpm("IS null");
+            }
+            if (!isset($json_check->data->utk_fedora_datastream_version_FEATURED_SIZE_ms)) {
+              dpm("IS not set");
+               throw new Exception('JSON FEATURED is not set');
+            }
+            $ismemberofcollection = $pid_to_check;
+        } catch (Exception $e) {
+          dpm("Exception $e");
+            // When there's an error recursively check for the parent
+            // Parent(s) of this PID
+            // If at the highest parent don't do anything.
+            if (($pid_to_check !== "islandora:root") && ($pid_to_check !== "digital:collections")) {
+                $ismemberofcollection = $object_to_check->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOfCollection')[0]['object']['value'];
+                dpm("Exception $ismemberofcollection");
+                utk_lib_digital_custom_parent($ismemberofcollection);
+            } else {
+                $ismemberofcollection = "";
+            }
+            // For Debugging
+            // echo $e->getMessage();
+        }
+        restore_error_handler();
+    }
+
+    return $ismemberofcollection;
 }
