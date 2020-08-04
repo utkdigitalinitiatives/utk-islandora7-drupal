@@ -116,41 +116,37 @@ function utk_lib_digital_custom_parent($pid_to_check)
       function ($severity, $message, $file, $line) {
           throw new ErrorException($message, $severity, $severity, $file, $line);
       }
-  );
+    );
 
     $object_to_check = islandora_object_load($pid_to_check);
 
     if ($object_to_check) {
         // Wrapping in a try catch to fetch parent recursively
         try {
+            $ismemberofcollection = $pid_to_check;
             $json = file_get_contents('https://www.lib.utk.edu/wp-json/dc/pid/' . $pid_to_check);
             $json_check = json_decode($json);
             if ( json_decode($json) === null ) {
                throw new Exception('JSON is empty');
-              dpm("IS null");
             }
             if (!isset($json_check->data->utk_fedora_datastream_version_FEATURED_SIZE_ms)) {
-              dpm("IS not set");
                throw new Exception('JSON FEATURED is not set');
             }
-            $ismemberofcollection = $pid_to_check;
+
         } catch (Exception $e) {
-          dpm("Exception $e");
             // When there's an error recursively check for the parent
             // Parent(s) of this PID
             // If at the highest parent don't do anything.
             if (($pid_to_check !== "islandora:root") && ($pid_to_check !== "digital:collections")) {
                 $ismemberofcollection = $object_to_check->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOfCollection')[0]['object']['value'];
-                dpm("Exception $ismemberofcollection");
-                utk_lib_digital_custom_parent($ismemberofcollection);
+                $ismemberofcollection = utk_lib_digital_custom_parent($ismemberofcollection);
             } else {
-                $ismemberofcollection = "";
+              $ismemberofcollection = "";
             }
             // For Debugging
             // echo $e->getMessage();
         }
         restore_error_handler();
     }
-
     return $ismemberofcollection;
 }
