@@ -2,5 +2,7 @@
 
 /**
  * @file
- * Drupal needs this blank file.
+ * Code for the UTK Banner feature.
  */
+
+include_once 'utk_banner.features.inc';
