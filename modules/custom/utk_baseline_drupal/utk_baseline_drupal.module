@@ -1,8 +1,0 @@
-<?php
-
-/**
- * @file
- * Code for the UTK_baseline drupal feature.
- */
-
-include_once 'utk_baseline_drupal.features.inc';
