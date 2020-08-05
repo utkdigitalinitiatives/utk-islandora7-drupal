@@ -1,0 +1,4 @@
+name = UTK Banner
+core = 7.x
+package = UTK Islandora
+features[features_api][] = api:2
