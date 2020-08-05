@@ -26,6 +26,14 @@ function utk_banner_context_default_contexts() {
         'islandora_is_islandora_object_types' => 'both',
       ),
     ),
+    'node' => array(
+      'values' => array(
+        'page' => 'page',
+      ),
+      'options' => array(
+        'node_form' => '0',
+      ),
+    ),
   );
   $context->reactions = array(
     'block' => array(
