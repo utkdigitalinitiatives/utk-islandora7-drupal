@@ -91,18 +91,22 @@ function utk_lib_digital_custom_banner($pidd)
 {
     $collection = utk_lib_digital_get_collection_basics($pidd);
 
-    $full = 'https://digital.lib.utk.edu/iiif/2/collections~islandora~object~' . $pidd . '~datastream~FEATURED~view/full/full/0/default.jpg';
-    $blur = 'https://digital.lib.utk.edu/iiif/2/collections~islandora~object~' . $pidd . '~datastream~FEATURED~view/full/full/0/default.jpg';
-
+    $image = 'https://digital.lib.utk.edu/iiif/2/collections~islandora~object~' . $pidd . '~datastream~FEATURED~view/full/523,/0/default.jpg';
     $title = $collection->data->fgs_label_s;
+    $abstract = $collection->data->utk_mods_abstract_ms[0];
 
     return '
             <div class="utk-digital-banner" id="utk-digital-banner-' . str_replace(':', '-', $pidd) .'">
                 <a href="/collections/islandora/object/' . $pidd . '">
-                    <img alt="' . $title . ' collection banner image" src="' . $full . '">
-                    <span>' . $title . '</span>
+                    <img alt="' . $title . ' collection banner image" src="' . $image . '">
+                    <div class="utk-digital-banner--info">
+                        <span>
+                            <strong>' . $title . '</strong>
+                        </span>
+                        <span>'  . $abstract . '</span>
+                    </div>
+                    <div class="utk-digital-banner--background" style="background-image: url(\''. $image . '\;)"></div>
                 </a>
-                <div class="utk-digital-banner-background" style="background-image: url(\''. $blur . '\;)"></div>
             </div>
            ';
 }
