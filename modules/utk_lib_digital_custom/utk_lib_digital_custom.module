@@ -89,12 +89,29 @@ function utk_lib_digital_custom_header($pidd)
 
 function utk_lib_digital_custom_banner($pidd)
 {
+    $collection = utk_lib_digital_get_collection_basics($pidd);
+
+    $full = 'https://digital.lib.utk.edu/iiif/2/collections~islandora~object~' . $pidd . '~datastream~FEATURED~view/full/full/0/default.jpg';
+    $blur = 'https://digital.lib.utk.edu/iiif/2/collections~islandora~object~' . $pidd . '~datastream~FEATURED~view/full/full/0/default.jpg';
+
+    $title = $collection->data->fgs_label_s;
+
     return '
-            <div class="content clearfix">
-               <div id="banner-container"><a href="/collections/islandora/object/' . $pidd . '"><img title="' . $pidd . ' Collection Banner Image" alt="' . $pidd . ' Collection Banner Image" src="https://digital.lib.utk.edu/iiif/2/collections~islandora~object~' . $pidd . '~datastream~FEATURED~view/full/full/0/default.jpg" border="0" id="splash-logo"></a>
-               </div>
+            <div class="utk-digital-banner" id="utk-digital-banner-' . str_replace(':', '-', $pidd) .'">
+                <a href="/collections/islandora/object/' . $pidd . '">
+                    <img alt="' . $title . ' collection banner image" src="' . $full . '">
+                    <span>' . $title . '</span>
+                </a>
+                <div class="utk-digital-banner-background" style="background-image: url(\''. $blur . '\;)"></div>
             </div>
            ';
+}
+
+
+function utk_lib_digital_get_collection_basics($islandora_pid)
+{
+    $json = file_get_contents('https://www.lib.utk.edu/wp-json/dc/pid/' . $islandora_pid);
+    return json_decode($json);
 }
 
 function utk_lib_digital_custom_featured_image($islandora_pid)
