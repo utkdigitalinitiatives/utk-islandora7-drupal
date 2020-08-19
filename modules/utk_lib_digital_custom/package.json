@@ -5,7 +5,7 @@
     "uglifycss": "0.0.29"
   },
   "scripts": {
-    "build-css": "node-sass-chokidar scss/utk_lib_digital_custom.scss -o css --watch --recursive",
-    "dev": "npm-run-all -p build-css"
+    "build": "node-sass-chokidar scss/utk_lib_digital_custom.scss -o css --watch --recursive",
+    "dev": "npm-run-all -p build"
   }
 }

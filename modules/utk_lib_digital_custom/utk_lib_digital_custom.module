@@ -96,16 +96,16 @@ function utk_lib_digital_custom_banner($pidd)
     $abstract = $collection->data->utk_mods_abstract_ms[0];
 
     return '
-            <div class="utk-digital-banner" id="utk-digital-banner-' . str_replace(':', '-', $pidd) .'">
+            <div class="utk-lib-digital--banner" id="utk-digital-banner-' . str_replace(':', '-', $pidd) .'">
                 <a href="/collections/islandora/object/' . $pidd . '">
-                    <img alt="' . $title . ' collection banner image" src="' . $image . '">
-                    <div class="utk-digital-banner--info">
-                        <span>
+                    <div class="utk-lib-digital--banner--info">
+                        <span class="utk-lib-digital--banner--info--title">
                             <strong>' . $title . '</strong>
                         </span>
-                        <span>'  . $abstract . '</span>
+                        <span class="utk-lib-digital--banner--info--abstract">'  . $abstract . '</span>
                     </div>
-                    <div class="utk-digital-banner--background" style="background-image: url(\''. $image . '\;)"></div>
+                    <img alt="' . $title . ' collection banner image" src="' . $image . '">
+                    <div class="utk-lib-digital--banner--background" style="background-image: url('. $image . ')"></div>
                 </a>
             </div>
            ';
