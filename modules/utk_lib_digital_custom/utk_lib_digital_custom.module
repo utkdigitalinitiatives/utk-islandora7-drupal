@@ -82,7 +82,6 @@ function utk_lib_digital_custom_header($pidd)
                       </ul>
                   </div>
               </div>
-              <div class="utk-lib-digital--header--background"> ' . utk_lib_digital_custom_featured_image($pidd) . '</div>
             </div>
             ';
 }
