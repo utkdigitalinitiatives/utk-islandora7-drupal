@@ -130,8 +130,9 @@
     overflow: hidden; }
   .utk-lib-digital--banner--background {
     filter: blur(76px);
-    transform: scale3d(1.29, 1.29, 1.29);
-    object-fit: cover;
-    object-position: 50% 50%;
+    transform: scale3d(1.11, 1.11, 1.11);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
     width: 100%;
     height: 100%; }
