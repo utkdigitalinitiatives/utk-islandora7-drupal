@@ -105,7 +105,9 @@ function utk_lib_digital_custom_banner($pidd)
                         <span class="utk-lib-digital--banner--info--abstract">'  . $abstract . '</span>
                     </div>
                     <img alt="' . $title . ' collection banner image" src="' . $image . '">
-                    <div class="utk-lib-digital--banner--background" style="background-image: url('. $image . ')"></div>
+                    <div class="utk-lib-digital--banner--background-wrap">
+                        <div class="utk-lib-digital--banner--background" style="background-image: url('. $image . ')"></div>
+                    </div>
                 </a>
             </div>
            ';
