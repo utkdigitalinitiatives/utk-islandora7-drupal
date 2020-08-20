@@ -71,14 +71,19 @@
 .utk-lib-digital--banner {
   background-color: #333333;
   position: relative;
-  padding: 47px; }
+  padding: 47px;
+  margin: 47px 0; }
   .utk-lib-digital--banner > a {
     display: flex; }
   .utk-lib-digital--banner img {
     position: relative;
     z-index: 1;
     box-shadow: 6px 6px 18px rgba(51, 51, 51, 0.47);
-    margin-bottom: -76px; }
+    margin-bottom: -76px;
+    width: 521px;
+    height: 322px;
+    flex-shrink: 0;
+    background-color: #333333; }
   .utk-lib-digital--banner--info {
     color: #ffffff;
     display: flex;
