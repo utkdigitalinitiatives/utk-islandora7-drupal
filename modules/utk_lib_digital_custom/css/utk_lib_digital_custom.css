@@ -71,37 +71,54 @@
 .utk-lib-digital--banner {
   background-color: #333333;
   position: relative;
-  padding: 47px;
   margin: 47px 0; }
-  .utk-lib-digital--banner > a {
-    display: flex; }
   .utk-lib-digital--banner img {
+    box-shadow: 6px 6px 18px rgba(0, 0, 0, 0.29);
+    margin-bottom: -76px;
+    width: 38.2%;
+    flex-shrink: 0;
+    background-color: #333333;
+    align-self: flex-end; }
+    @media (max-width: 1220px) {
+      .utk-lib-digital--banner img {
+        width: 50%;
+        margin-bottom: 0; } }
+    @media (max-width: 960px) {
+      .utk-lib-digital--banner img {
+        margin-top: 0;
+        margin-bottom: 47px;
+        width: 100%; } }
+  .utk-lib-digital--banner--inner {
+    padding: 47px;
+    display: flex;
+    flex-direction: row;
     position: relative;
     z-index: 1;
-    box-shadow: 6px 6px 18px rgba(51, 51, 51, 0.47);
-    margin-bottom: -76px;
-    width: 521px;
-    height: 322px;
-    flex-shrink: 0;
-    background-color: #333333; }
+    background: #333333;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.72) 61.8%, rgba(0, 0, 0, 0) 100%); }
+    @media (max-width: 960px) {
+      .utk-lib-digital--banner--inner {
+        flex-direction: column-reverse;
+        padding: 29px; } }
   .utk-lib-digital--banner--info {
     color: #ffffff;
     display: flex;
     flex-direction: column;
-    position: relative;
-    z-index: 2;
     flex-shrink: 1;
     justify-content: flex-end;
-    margin-left: -47px;
-    margin-bottom: -47px;
-    padding: 47px;
-    background: #333333;
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.72) 61.8%, rgba(0, 0, 0, 0) 100%); }
+    padding-right: 47px;
+    margin-top: 29px; }
+    @media (max-width: 768px) {
+      .utk-lib-digital--banner--info {
+        padding-right: 0; } }
     .utk-lib-digital--banner--info--title {
       font-size: 23px;
       display: block;
       line-height: 1.29em;
       margin-bottom: 11px; }
+      @media (max-width: 768px) {
+        .utk-lib-digital--banner--info--title {
+          font-size: 18px; } }
       .utk-lib-digital--banner--info--title::before {
         content: '';
         height: 6px;
