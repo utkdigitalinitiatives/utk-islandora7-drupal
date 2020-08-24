@@ -25,6 +25,12 @@ function example_preprocess_html(&$variables) {
  }
 */
 
+function sis_preprocess_html(&$variables) {
+    $variables['utk_header'] = block_get_blocks_by_region('utk_header');
+
+    return $variables;
+}
+
 function sis_preprocess_page(&$variables) {
 
    $title = drupal_set_title();

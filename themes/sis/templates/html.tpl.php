@@ -20,7 +20,6 @@
     <title><?php print $head_title; ?></title>
     <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
-    <link href="https://www.lib.utk.edu/assets/header/header.css" rel="stylesheet">
     <noscript>
         <div>HTML menu inserted here for WCAG 2.1 AA accessibility compliance.</div>
     </noscript>
@@ -38,10 +37,11 @@
             data-page-title="Digital Collections"
             data-url="https://digital.lib.utk.edu/"
             data-libchat="e98ae2539f2bd5d1659cc53d7de2812b"></header>
+    <?php print render($utk_header); ?>
     <?php print $page_top; ?>
     <?php print $page; ?>
     <?php print $page_bottom; ?>
     <footer id="utk-lib-footer"></footer>
-    <script type="text/javascript" src="https://www.lib.utk.edu/assets/header/header.js"></script>
+    <script async src="https://www.lib.utk.edu/assets/universal-header.js"></script>
 </body>
 </html>
