@@ -38,6 +38,7 @@
             data-page-title="Digital Collections"
             data-url="https://digital.lib.utk.edu/"
             data-libchat="e98ae2539f2bd5d1659cc53d7de2812b"></header>
+    <?php print render($utk_header); ?>
     <?php print $page_top; ?>
     <?php print $page; ?>
     <?php print $page_bottom; ?>
