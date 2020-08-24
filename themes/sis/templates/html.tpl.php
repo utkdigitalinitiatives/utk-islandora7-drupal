@@ -20,7 +20,6 @@
     <title><?php print $head_title; ?></title>
     <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
-    <script async src="https://www.lib.utk.edu/assets/universal-header.js"></script>
     <noscript>
         <div>HTML menu inserted here for WCAG 2.1 AA accessibility compliance.</div>
     </noscript>
@@ -43,5 +42,6 @@
     <?php print $page; ?>
     <?php print $page_bottom; ?>
     <footer id="utk-lib-footer"></footer>
+    <script async src="https://www.lib.utk.edu/assets/universal-header.js"></script>
 </body>
 </html>
