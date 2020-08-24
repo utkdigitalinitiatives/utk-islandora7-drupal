@@ -51,16 +51,16 @@ function utk_lib_digital_custom_block_view($delta = '')
         $object = islandora_object_load($pid);
         $member_of = utk_lib_digital_custom_parent($pid);
     }
-    if ($member_of != "") {
-        // firing the 2 blocks
-        switch ($delta) {
-        case 'utk_lib_digital_custom_header':
-            $block['content'] = utk_lib_digital_custom_header($member_of);
-            break;
-        case 'utk_lib_digital_custom_banner':
+      // firing the 2 blocks
+      switch ($delta) {
+      case 'utk_lib_digital_custom_header':
+          $block['content'] = utk_lib_digital_custom_header($member_of);
+          break;
+      case 'utk_lib_digital_custom_banner':
+          if ($member_of != "") {
             $block['content'] = utk_lib_digital_custom_banner($member_of);
-            break;
-    }
+          }
+          break;
     }
     return $block;
 }
