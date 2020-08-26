@@ -51,21 +51,22 @@ function utk_lib_digital_custom_block_view($delta = '')
         $object = islandora_object_load($pid);
         $member_of = utk_lib_digital_custom_parent($pid);
     }
-      // firing the 2 blocks
-      switch ($delta) {
-      case 'utk_lib_digital_custom_header':
-          $block['content'] = utk_lib_digital_custom_header($member_of);
-          break;
-      case 'utk_lib_digital_custom_banner':
-          if ($member_of != "") {
-            $block['content'] = utk_lib_digital_custom_banner($member_of);
-          }
-          break;
+
+    // firing the 2 blocks
+    switch ($delta) {
+        case 'utk_lib_digital_custom_header':
+            $block['content'] = utk_lib_digital_custom_header();
+            break;
+        case 'utk_lib_digital_custom_banner':
+            if ($member_of != "") {
+                $block['content'] = utk_lib_digital_custom_banner($member_of);
+            }
+            break;
     }
     return $block;
 }
 
-function utk_lib_digital_custom_header($pidd)
+function utk_lib_digital_custom_header()
 {
     return '
             <div class="utk-lib-digital--header">
@@ -73,7 +74,7 @@ function utk_lib_digital_custom_header($pidd)
                   <div class="container">
                       <a class="utk-lib-digital--header--title"
                          href="https://digital.lib.utk.edu">
-                        <h1>' . variable_get('site_name', 'Default'). '</h1>
+                        <h1>' . variable_get('site_name', 'Default') . '</h1>
                       </a>
                       <ul class="utk-lib-digital--header--menu">
                         <li><a href="https://digital.lib.utk.edu">Home</a></li>
@@ -97,19 +98,19 @@ function utk_lib_digital_custom_banner($pidd)
     //Postcards from the Great Smoky Mountains
 
     return '
-            <div class="utk-lib-digital--banner" id="utk-digital-banner-' . str_replace(':', '-', $pidd) .'">
+            <div class="utk-lib-digital--banner" id="utk-digital-banner-' . str_replace(':', '-', $pidd) . '">
                 <a href="/collections/islandora/object/' . $pidd . '">
                     <div class="utk-lib-digital--banner--inner">
                         <div class="utk-lib-digital--banner--info">
                             <span class="utk-lib-digital--banner--info--title">
                                 <strong>' . $title . '</strong>
                             </span>
-                            <span class="utk-lib-digital--banner--info--abstract">'  . $abstract . '</span>
+                            <span class="utk-lib-digital--banner--info--abstract">' . $abstract . '</span>
                         </div>
                         <img alt="' . $title . ' collection banner image" src="' . $image . '" />
                     </div>
                     <div class="utk-lib-digital--banner--background-wrap">
-                        <div class="utk-lib-digital--banner--background" style="background-image: url('. $image . ')"></div>
+                        <div class="utk-lib-digital--banner--background" style="background-image: url(' . $image . ')"></div>
                     </div>
                 </a>
             </div>
@@ -129,7 +130,7 @@ function utk_lib_digital_custom_featured_image($islandora_pid)
     $featured = json_decode($json);
     $alt = $featured->data->fgs_label_s;
     $src = 'https://digital.lib.utk.edu/iiif/2/collections~islandora~object~' . $islandora_pid . '~datastream~FEATURED~view/full/322,/0/default.jpg';
-    $output = '<img src="' . $src .'" alt="' . $alt .'" />';
+    $output = '<img src="' . $src . '" alt="' . $alt . '" />';
     return $output;
 }
 
@@ -139,9 +140,9 @@ function utk_lib_digital_custom_parent($pid_to_check)
     module_load_include('inc', 'islandora', 'includes/utilities');
     // Handle errors when fetching the JSON from WP site.
     set_error_handler(
-      function ($severity, $message, $file, $line) {
-          throw new ErrorException($message, $severity, $severity, $file, $line);
-      }
+        function ($severity, $message, $file, $line) {
+            throw new ErrorException($message, $severity, $severity, $file, $line);
+        }
     );
 
     $object_to_check = islandora_object_load($pid_to_check);
@@ -152,11 +153,11 @@ function utk_lib_digital_custom_parent($pid_to_check)
             $ismemberofcollection = $pid_to_check;
             $json = file_get_contents('https://www.lib.utk.edu/wp-json/dc/pid/' . $pid_to_check);
             $json_check = json_decode($json);
-            if ( json_decode($json) === null ) {
-               throw new Exception('JSON is empty');
+            if (json_decode($json) === null) {
+                throw new Exception('JSON is empty');
             }
             if (!isset($json_check->data->utk_fedora_datastream_version_FEATURED_SIZE_ms)) {
-               throw new Exception('JSON FEATURED is not set');
+                throw new Exception('JSON FEATURED is not set');
             }
 
         } catch (Exception $e) {
@@ -167,7 +168,7 @@ function utk_lib_digital_custom_parent($pid_to_check)
                 $ismemberofcollection = $object_to_check->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOfCollection')[0]['object']['value'];
                 $ismemberofcollection = utk_lib_digital_custom_parent($ismemberofcollection);
             } else {
-              $ismemberofcollection = "";
+                $ismemberofcollection = "";
             }
             // For Debugging
             // echo $e->getMessage();

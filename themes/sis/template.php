@@ -26,7 +26,13 @@ function example_preprocess_html(&$variables) {
 */
 
 function sis_preprocess_html(&$variables) {
-    $variables['utk_header'] = block_get_blocks_by_region('utk_header');
+
+    // render blocks for region by context module or by structure/blocks as backup
+    if ($plugin = context_get_plugin('reaction', 'block')) :
+        $variables['utk_header'] = $plugin->block_get_blocks_by_region('utk_header');
+    else:
+        $variables['utk_header'] = block_get_blocks_by_region('utk_header');
+    endif;
 
     return $variables;
 }
