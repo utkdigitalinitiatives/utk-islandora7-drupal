@@ -1,0 +1,9 @@
+name = UTK Header
+core = 7.x
+package = UTK Islandora
+dependencies[] = context
+dependencies[] = ctools
+dependencies[] = utk_lib_digital_custom
+features[context][] = utk_header
+features[ctools][] = context:context:3
+features[features_api][] = api:2
