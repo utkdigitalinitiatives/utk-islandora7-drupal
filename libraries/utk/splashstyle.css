@@ -1,0 +1,169 @@
+div#splashpagecontent {
+	width: 100%;
+}
+
+div#leftside {
+	width: 35%;
+	float: left;
+	text-align: center;
+}
+
+div#rightside {
+	width: 60%;
+	float: right;
+}
+
+/*h1#page-title {
+	display: none;
+}*/
+
+.breadcrumb {
+	display: none;
+}
+
+/*
+div#banner-container {
+	padding-left: 10%;
+	padding-right: 10%;
+}*/
+
+div#splashnav {
+	width: 100%;
+	padding-top:3em;
+	padding-bottom: 10em;
+	display: inline
+}
+
+div#splashintro {
+	width: 30%;
+	float: left;
+	display: inline;
+}
+
+div#splashbrowse {
+	width: 30%;
+	display: inline;
+	float: left;
+}
+
+div#splashsearch {
+	width: 30%;
+	float: right;
+	display: inline;
+}
+
+div#region-splashsearch {
+	/*float: right;*/
+	padding-left: 10px;
+	padding-top: 15px;
+}
+
+/* Added by Mark to Style Search */
+input#edit-collection-query-term {
+	display: inline;
+}
+
+select#edit-collection-select {
+	width: 50%;
+	float: left;
+}
+
+input#edit-collection-query-term {
+	width: 30%;
+}
+
+div#region-splashbanner {
+	margin-bottom: 1em;
+}
+
+select#edit-collection-select {
+	margin-right:1em;
+}
+
+a#splashintrotext {
+	font-weight: bold;
+	font-size: 1.3em;
+}
+
+a#splashbrowsetext {
+	font-weight: bold;
+	font-size: 1.3em;
+}
+
+div#edit-collection-search {
+	font-size: 80%;
+}
+
+/* Rounding Corners on Images & Search Boxes to Match Theme */
+
+select#edit-collection-select {
+	border-radius: 5px;
+}
+
+input#edit-collection-query-term {
+	border-radius: 5px;
+}
+
+#splashpageimg {
+	border-radius: 5px;
+}
+
+#splash-logo {
+	border-radius: 5px;
+	display: block;
+	margin: auto;
+}
+
+/* Correct Spacing Problems */
+div#zone-menu {
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+
+a.librarynavlink {
+	color: black;
+}
+
+/* Fix Banner Spacing */
+li.clear {
+	margin-bottom: 0px;
+}
+
+li.navigationItem {
+	margin-bottom: 0px;
+}
+
+/* Derris Technical Information */
+p#DerrisTech {
+	font-size: 85%;
+}
+
+/* Gallery Stuff for Baker*/
+.GalleryImageOut {
+	background: #517c96;
+	padding: 6px;
+}
+
+.GalleryImageIn {
+	background: #517c96;
+	padding: 6px;
+	border: 1px solid #ffffff;
+}
+
+.GalleyContent {
+	background: #ffffff;
+}
+
+.GalleryImageIn > h3 {
+	color: #ffffff;
+	font-family: Arial;
+	margin-bottom: 0px;
+}
+
+#zone-postscript {
+	border-top: none;
+}
+
+#ExploreHeading {
+	margin-bottom: 0px;
+}

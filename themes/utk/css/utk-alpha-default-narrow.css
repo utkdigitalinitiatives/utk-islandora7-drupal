@@ -1,0 +1,42 @@
+/* This file will hold styles that are loaded using the same media query as the narrow grid. */
+/* If you are using the default media queries provided by Omega, these styles will also
+ *  apply to the normal and widescreen layouts. You may override these styles in the normal 
+ *  and widescreen CSS files as appropriate. */
+ 
+ #footernav {
+    width: 99.75%;
+}
+.footer-map {
+    width: 95%;
+}
+
+.sf-menu.sf-style-default a {
+	padding: 6px 10px;
+	font-size: 0.8em;
+}
+.sf-menu.sf-style-default a.sf-with-ul {
+    padding-right: 0.5em;
+}
+.sf-sub-indicator
+ {display: none;
+}
+.block-block-84 li {
+    margin-bottom: 0px;
+    font-size: 1.0em;
+}
+.block-block-57 {
+    display: none;
+}
+.ico-wutk a {
+    margin-right: 0px;
+}
+.view-display-id-block_2 li {
+   font-size: 90%;
+}
+.view-display-id-block_2 {
+   width: 100%;
+}
+
+.block-block-84 img {
+    display: none;
+}
