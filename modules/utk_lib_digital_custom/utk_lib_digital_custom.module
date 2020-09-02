@@ -27,7 +27,7 @@ function utk_lib_digital_custom_block_view($delta = '')
     $is_a_introduction = drupal_match_path(drupal_lookup_path('alias', current_path()), '*collection');
     $parsed_request = explode('/', $_SERVER['REQUEST_URI']);
 
-    $pid = preg_replace("/\?.+/", "", urldecode(end($parsed_request)));
+    $pid = check_plain(preg_replace("/\?.+/", "", urldecode(end($parsed_request))));
     $member_of = "";
     // If not an introduction page determine the PID
     if (!$is_a_introduction) {
