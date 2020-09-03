@@ -244,12 +244,12 @@ class Slider extends Component {
     const progress = this.getProgress();
 
     if (progress === this.progress_) {
-      return;
+      return progress;
     }
 
     this.progress_ = progress;
 
-    this.requestAnimationFrame(() => {
+    this.requestNamedAnimationFrame('Slider#update', () => {
       // Set the new bar width or height
       const sizeKey = this.vertical() ? 'height' : 'width';
 
@@ -268,7 +268,7 @@ class Slider extends Component {
    *         percentage filled that the slider is
    */
   getProgress() {
-    return clamp(this.getPercent(), 0, 1).toFixed(4);
+    return Number(clamp(this.getPercent(), 0, 1).toFixed(4));
   }
 
   /**
