@@ -1,0 +1,36 @@
+/* This file will hold styles that are loaded using the same media query as the wide grid. */
+
+.sitename-img {
+    display: block;
+    height: 96px;
+    margin-top: -1.35em;
+    width: 100%;
+    }
+    
+.sitename-img {
+height: 101px;
+margin-top: 0em;
+}
+@-moz-document url-prefix() {
+/* Styles */
+ .sitename-img {
+   margin-top: -1.34em;
+}
+.sf-menu.sf-style-default {
+    margin-top: -0.4em;
+}
+}
+.sf-menu.sf-style-default a.sf-with-ul {
+    padding-left: 2em;
+    padding-right: 2em;
+}
+.flexslider ul.slides, .flex-nav-container ol.flex-control-nav, .flex-nav-container ul.flex-direction-nav, .flexslider ul.slides li img {
+    padding-left: 8px;
+}
+.flex-caption {
+    margin-left: 22px;
+}
+.block-block-84 li {
+    margin-bottom: 12px;
+}
+    

@@ -1,0 +1,11 @@
+name = UTK_users
+core = 7.x
+package = UTK Islandora
+dependencies[] = features
+features[features_api][] = api:2
+features[user_role][] = Cataloger
+features[user_role][] = Student Assistant
+features[user_role][] = Web Developer
+features[user_role][] = administrator
+features[user_role][] = iadmin
+project path = sites/all/modules/custom
