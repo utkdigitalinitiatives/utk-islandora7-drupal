@@ -283,7 +283,6 @@ jQuery(document).ready(function () {
         jQuery(("option[value='collections:rmtravis']")).prependTo("#edit-collection-select");
         jQuery(("option[value='collections:rmtravis']")).attr('selected', 'selected');
     }
-
     if (collectionname == '/collections/garnercollection') {
         jQuery(("option[value='collections:garner']")).prependTo("#edit-collection-select");
         jQuery(("option[value='collections:garner']")).attr('selected', 'selected');
@@ -296,6 +295,10 @@ jQuery(document).ready(function () {
         jQuery(("option[value='collections:wccochran']")).prependTo("#edit-collection-select");
         jQuery(("option[value='collections:wccochran']")).attr('selected', 'selected');
     }
+   if (collectionname == '/collections/ladytenniscollection') {
+        jQuery(("option[value='collections:ladytennis']")).prependTo("#edit-collection-select");
+        jQuery(("option[value='collections:ladytennis']")).attr('selected', 'selected');
+    }
    if (collectionname == '/collections/menbballcollection') {
         jQuery(("option[value='collections:menbball']")).prependTo("#edit-collection-select");
         jQuery(("option[value='collections:menbball']")).attr('selected', 'selected');
@@ -305,8 +308,24 @@ jQuery(document).ready(function () {
         jQuery(("option[value='collections:womenbball']")).attr('selected', 'selected');
     }
     if (collectionname == '/collections/tdhcollection') {
-    	jQuery(("option[value='collections:tdh']")).prependTo("#edit-collection-select");
-	jQuery(("option[value='collections:tdh']")).attr('selected', 'selected');
+        jQuery(("option[value='collections:tdh']")).prependTo("#edit-collection-select");
+        jQuery(("option[value='collections:tdh']")).attr('selected', 'selected');
+    }
+    if (collectionname == '/collections/waldencollection') {
+        jQuery(("option[value='collections:walden']")).prependTo("#edit-collection-select");
+        jQuery(("option[value='collections:walden']")).attr('selected', 'selected');
+    }
+    if (collectionname == '/collections/mencrosscollection') {
+        jQuery(("option[value='collections:mencross']")).prependTo("#edit-collection-select");
+        jQuery(("option[value='collections:mencross']")).attr('selected', 'selected');
+    }
+    if (collectionname == '/collections/mentrackcollection') {
+        jQuery(("option[value='collections:mentrack']")).prependTo("#edit-collection-select");
+        jQuery(("option[value='collections:mentrack']")).attr('selected', 'selected');
+    }
+    if (collectionname == '/collections/volohcollection') {
+       jQuery(("option[value='collections:voloh']")).prependTo("#edit-collection-select");
+       jQuery(("option[value='collections:voloh']")).attr('selected', 'selected');
     }
     /* Ugh--the above won't work if we use the New Menu Options for the Splash Pages so here */
     collectionname = jQuery("#splash-logo").attr('alt');

@@ -11,9 +11,10 @@ import window from 'global/window';
 import {assign} from '../utils/obj';
 import mergeOptions from '../utils/merge-options.js';
 import {toTitleCase} from '../utils/string-cases.js';
-import {NORMAL as TRACK_TYPES} from '../tracks/track-types';
+import {NORMAL as TRACK_TYPES, REMOTE} from '../tracks/track-types';
 import setupSourceset from './setup-sourceset';
 import defineLazyProperty from '../utils/define-lazy-property.js';
+import {silencePromise} from '../utils/promise';
 
 /**
  * HTML5 Media Controller - Wrapper for HTML5 Media API
@@ -273,13 +274,26 @@ class Html5 extends Tech {
       return;
     }
     const listeners = {
-      change(e) {
-        techTracks.trigger({
+      change: (e) => {
+        const event = {
           type: 'change',
           target: techTracks,
           currentTarget: techTracks,
           srcElement: techTracks
-        });
+        };
+
+        techTracks.trigger(event);
+
+        // if we are a text track change event, we should also notify the
+        // remote text track list. This can potentially cause a false positive
+        // if we were to get a change event on a non-remote track and
+        // we triggered the event on the remote text track list which doesn't
+        // contain that track. However, best practices mean looping through the
+        // list of tracks and searching for the appropriate mode value, so,
+        // this shouldn't pose an issue
+        if (name === 'text') {
+          this[REMOTE.remoteText.getterName]().trigger(event);
+        }
       },
       addtrack(e) {
         techTracks.addTrack(e.track);
@@ -389,6 +403,10 @@ class Html5 extends Tech {
 
     if (typeof this.options_.preload !== 'undefined') {
       Dom.setAttribute(el, 'preload', this.options_.preload);
+    }
+
+    if (this.options_.disablePictureInPicture !== undefined) {
+      el.disablePictureInPicture = this.options_.disablePictureInPicture;
     }
 
     // Update specific tag settings, in case they were overridden
@@ -506,6 +524,10 @@ class Html5 extends Tech {
     });
   }
 
+  setScrubbing(isScrubbing) {
+    this.isScrubbing_ = isScrubbing;
+  }
+
   /**
    * Set current time for the `HTML5` tech.
    *
@@ -514,7 +536,11 @@ class Html5 extends Tech {
    */
   setCurrentTime(seconds) {
     try {
-      this.el_.currentTime = seconds;
+      if (this.isScrubbing_ && this.el_.fastSeek && browser.IS_ANY_SAFARI) {
+        this.el_.fastSeek(seconds);
+      } else {
+        this.el_.currentTime = seconds;
+      }
     } catch (e) {
       log(e, 'Video is not ready. (Video.js)');
       // this.warning(VideoJS.warnings.videoNotReady);
@@ -600,7 +626,11 @@ class Html5 extends Tech {
         this.el_.webkitPresentationMode !== 'picture-in-picture') {
         this.one('webkitendfullscreen', endFn);
 
-        this.trigger('fullscreenchange', { isFullscreen: true });
+        this.trigger('fullscreenchange', {
+          isFullscreen: true,
+          // set a flag in case another tech triggers fullscreenchange
+          nativeIOSFullscreen: true
+        });
       }
     };
 
@@ -639,16 +669,24 @@ class Html5 extends Tech {
     if (video.paused && video.networkState <= video.HAVE_METADATA) {
       // attempt to prime the video element for programmatic access
       // this isn't necessary on the desktop but shouldn't hurt
-      this.el_.play();
+      silencePromise(this.el_.play());
 
       // playing and pausing synchronously during the transition to fullscreen
       // can get iOS ~6.1 devices into a play/pause loop
       this.setTimeout(function() {
         video.pause();
-        video.webkitEnterFullScreen();
+        try {
+          video.webkitEnterFullScreen();
+        } catch (e) {
+          this.trigger('fullscreenerror', e);
+        }
       }, 0);
     } else {
-      video.webkitEnterFullScreen();
+      try {
+        video.webkitEnterFullScreen();
+      } catch (e) {
+        this.trigger('fullscreenerror', e);
+      }
     }
   }
 
@@ -656,6 +694,11 @@ class Html5 extends Tech {
    * Request that the `HTML5` Tech exit fullscreen.
    */
   exitFullScreen() {
+    if (!this.el_.webkitDisplayingFullscreen) {
+      this.trigger('fullscreenerror', new Error('The video is not fullscreen'));
+      return;
+    }
+
     this.el_.webkitExitFullScreen();
   }
 
@@ -1170,7 +1213,7 @@ Html5.Events = [
   ['featuresNativeVideoTracks', 'supportsNativeVideoTracks'],
   ['featuresNativeAudioTracks', 'supportsNativeAudioTracks']
 ].forEach(function([key, fn]) {
-  defineLazyProperty(Html5.prototype, key, () => Html5[fn](), false);
+  defineLazyProperty(Html5.prototype, key, () => Html5[fn](), true);
 });
 
 /**
@@ -1491,8 +1534,8 @@ Html5.resetMediaElement = function(el) {
 // Wrap native properties with a getter
 // The list is as followed
 // paused, currentTime, buffered, volume, poster, preload, error, seeking
-// seekable, ended, playbackRate, defaultPlaybackRate, played, networkState
-// readyState, videoWidth, videoHeight
+// seekable, ended, playbackRate, defaultPlaybackRate, disablePictureInPicture
+// played, networkState, readyState, videoWidth, videoHeight, crossOrigin
 [
   /**
    * Get the value of `paused` from the media element. `paused` indicates whether the media element
@@ -1665,6 +1708,19 @@ Html5.resetMediaElement = function(el) {
   'defaultPlaybackRate',
 
   /**
+   * Get the value of 'disablePictureInPicture' from the video element.
+   *
+   * @method Html5#disablePictureInPicture
+   * @return {boolean} value
+   *         - The value of `disablePictureInPicture` from the video element.
+   *         - True indicates that the video can't be played in Picture-In-Picture mode
+   *         - False indicates that the video can be played in Picture-In-Picture mode
+   *
+   * @see [Spec]{@link https://w3c.github.io/picture-in-picture/#disable-pip}
+   */
+  'disablePictureInPicture',
+
+  /**
    * Get the value of `played` from the media element. `played` returns a `TimeRange`
    * object representing points in the media timeline that have been played.
    *
@@ -1737,7 +1793,21 @@ Html5.resetMediaElement = function(el) {
    *
    * @see [Spec] {@link https://www.w3.org/TR/html5/embedded-content-0.html#dom-video-videowidth}
    */
-  'videoHeight'
+  'videoHeight',
+
+  /**
+   * Get the value of `crossOrigin` from the media element. `crossOrigin` indicates
+   * to the browser that should sent the cookies along with the requests for the
+   * different assets/playlists
+   *
+   * @method Html5#crossOrigin
+   * @return {string}
+   *         - anonymous indicates that the media should not sent cookies.
+   *         - use-credentials indicates that the media should sent cookies along the requests.
+   *
+   * @see [Spec]{@link https://html.spec.whatwg.org/#attr-media-crossorigin}
+   */
+  'crossOrigin'
 ].forEach(function(prop) {
   Html5.prototype[prop] = function() {
     return this.el_[prop];
@@ -1747,7 +1817,8 @@ Html5.resetMediaElement = function(el) {
 // Wrap native properties with a setter in this format:
 // set + toTitleCase(name)
 // The list is as follows:
-// setVolume, setSrc, setPoster, setPreload, setPlaybackRate, setDefaultPlaybackRate
+// setVolume, setSrc, setPoster, setPreload, setPlaybackRate, setDefaultPlaybackRate,
+// setDisablePictureInPicture, setCrossOrigin
 [
   /**
    * Set the value of `volume` on the media element. `volume` indicates the current
@@ -1837,8 +1908,33 @@ Html5.resetMediaElement = function(el) {
    *
    * @see [Spec]{@link https://www.w3.org/TR/html5/embedded-content-0.html#dom-media-defaultplaybackrate}
    */
-  'defaultPlaybackRate'
+  'defaultPlaybackRate',
 
+  /**
+   * Prevents the browser from suggesting a Picture-in-Picture context menu
+   * or to request Picture-in-Picture automatically in some cases.
+   *
+   * @method Html5#setDisablePictureInPicture
+   * @param {boolean} value
+   *         The true value will disable Picture-in-Picture mode.
+   *
+   * @see [Spec]{@link https://w3c.github.io/picture-in-picture/#disable-pip}
+   */
+  'disablePictureInPicture',
+
+  /**
+   * Set the value of `crossOrigin` from the media element. `crossOrigin` indicates
+   * to the browser that should sent the cookies along with the requests for the
+   * different assets/playlists
+   *
+   * @method Html5#setCrossOrigin
+   * @param {string} crossOrigin
+   *         - anonymous indicates that the media should not sent cookies.
+   *         - use-credentials indicates that the media should sent cookies along the requests.
+   *
+   * @see [Spec]{@link https://html.spec.whatwg.org/#attr-media-crossorigin}
+   */
+  'crossOrigin'
 ].forEach(function(prop) {
   Html5.prototype['set' + toTitleCase(prop)] = function(v) {
     this.el_[prop] = v;

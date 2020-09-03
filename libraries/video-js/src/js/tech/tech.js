@@ -141,6 +141,8 @@ class Tech extends Component {
       this.emulateTextTracks();
     }
 
+    this.preloadTextTracks = options.preloadTextTracks !== false;
+
     this.autoRemoteTextTracks_ = new TRACK_TYPES.ALL.text.ListClass();
 
     this.initTrackListeners();
@@ -427,6 +429,25 @@ class Tech extends Component {
    * @abstract
    */
   reset() {}
+
+  /**
+   * Get the value of `crossOrigin` from the tech.
+   *
+   * @abstract
+   *
+   * @see {Html5#crossOrigin}
+   */
+  crossOrigin() {}
+
+  /**
+   * Set the value of `crossOrigin` on the tech.
+   *
+   * @abstract
+   *
+   * @param {string} crossOrigin the crossOrigin value
+   * @see {Html5#setCrossOrigin}
+   */
+  setCrossOrigin() {}
 
   /**
    * Get or set an error on the Tech.
@@ -785,6 +806,23 @@ class Tech extends Component {
       return PromiseClass.reject();
     }
   }
+
+  /**
+   * A method to check for the value of the 'disablePictureInPicture' <video> property.
+   * Defaults to true, as it should be considered disabled if the tech does not support pip
+   *
+   * @abstract
+   */
+  disablePictureInPicture() {
+    return true;
+  }
+
+  /**
+   * A method to set or unset the 'disablePictureInPicture' <video> property.
+   *
+   * @abstract
+   */
+  setDisablePictureInPicture() {}
 
   /**
    * A method to set a poster from a `Tech`.

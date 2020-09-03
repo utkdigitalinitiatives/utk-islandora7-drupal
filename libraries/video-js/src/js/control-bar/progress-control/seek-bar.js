@@ -21,9 +21,6 @@ const STEP_SECONDS = 5;
 // The multiplier of STEP_SECONDS that PgUp/PgDown move the timeline.
 const PAGE_KEY_MULTIPLIER = 12;
 
-// The interval at which the bar should update as it progresses.
-const UPDATE_REFRESH_INTERVAL = 30;
-
 /**
  * Seek bar and container for the progress bars. Uses {@link PlayProgressBar}
  * as its `bar`.
@@ -52,7 +49,8 @@ class SeekBar extends Slider {
    * @private
    */
   setEventHandlers_() {
-    this.update = Fn.throttle(Fn.bind(this, this.update), UPDATE_REFRESH_INTERVAL);
+    this.update_ = Fn.bind(this, this.update);
+    this.update = Fn.throttle(this.update_, Fn.UPDATE_REFRESH_INTERVAL);
 
     this.on(this.player_, ['ended', 'durationchange', 'timeupdate'], this.update);
     if (this.player_.liveTracker) {
@@ -90,11 +88,11 @@ class SeekBar extends Slider {
       return;
 
     }
-    this.updateInterval = this.setInterval(this.update, UPDATE_REFRESH_INTERVAL);
+    this.updateInterval = this.setInterval(this.update, Fn.UPDATE_REFRESH_INTERVAL);
   }
 
   disableInterval_(e) {
-    if (this.player_.liveTracker && this.player_.liveTracker.isLive() && e.type !== 'ended') {
+    if (this.player_.liveTracker && this.player_.liveTracker.isLive() && e && e.type !== 'ended') {
       return;
     }
 
@@ -135,7 +133,7 @@ class SeekBar extends Slider {
   update(event) {
     const percent = super.update();
 
-    this.requestAnimationFrame(() => {
+    this.requestNamedAnimationFrame('SeekBar#update', () => {
       const currentTime = this.player_.ended() ?
         this.player_.duration() : this.getCurrentTime_();
       const liveTracker = this.player_.liveTracker;
@@ -165,6 +163,11 @@ class SeekBar extends Slider {
 
         this.currentTime_ = currentTime;
         this.duration_ = duration;
+      }
+
+      // update the progress bar time tooltip with the current time
+      if (this.bar) {
+        this.bar.update(Dom.getBoundingClientRect(this.el()), this.getProgress());
       }
     });
 
@@ -258,6 +261,11 @@ class SeekBar extends Slider {
         newTime = newTime - 0.1;
       }
     } else {
+
+      if (distance >= 0.99) {
+        liveTracker.seekToLiveEdge();
+        return;
+      }
       const seekableStart = liveTracker.seekableStart();
       const seekableEnd = liveTracker.liveCurrentTime();
 
@@ -335,6 +343,10 @@ class SeekBar extends Slider {
     this.player_.trigger({ type: 'timeupdate', target: this, manuallyTriggered: true });
     if (this.videoWasPlaying) {
       silencePromise(this.player_.play());
+    } else {
+      // We're done seeking and the time has changed.
+      // If the player is paused, make sure we display the correct time on the seek bar.
+      this.update_();
     }
   }
 
@@ -415,6 +427,26 @@ class SeekBar extends Slider {
       // Pass keydown handling up for unsupported keys
       super.handleKeyDown(event);
     }
+  }
+
+  dispose() {
+    this.disableInterval_();
+
+    this.off(this.player_, ['ended', 'durationchange', 'timeupdate'], this.update);
+    if (this.player_.liveTracker) {
+      this.on(this.player_.liveTracker, 'liveedgechange', this.update);
+    }
+
+    this.off(this.player_, ['playing'], this.enableInterval_);
+    this.off(this.player_, ['ended', 'pause', 'waiting'], this.disableInterval_);
+
+    // we don't need to update the play progress if the document is hidden,
+    // also, this causes the CPU to spike and eventually crash the page on IE11.
+    if ('hidden' in document && 'visibilityState' in document) {
+      this.off(document, 'visibilitychange', this.toggleVisibility_);
+    }
+
+    super.dispose();
   }
 }
 
