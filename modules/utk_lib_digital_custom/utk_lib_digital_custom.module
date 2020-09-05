@@ -165,8 +165,12 @@ function utk_lib_digital_custom_parent($pid_to_check)
             // Parent(s) of this PID
             // If at the highest parent don't do anything.
             if (($pid_to_check !== "islandora:root") && ($pid_to_check !== "digital:collections")) {
-                $ismemberofcollection = $object_to_check->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOfCollection')[0]['object']['value'];
-                $ismemberofcollection = utk_lib_digital_custom_parent($ismemberofcollection);
+                $object_pid = utk_lib_digital_check_object_pid($object_to_check);
+                if ($object_pid) {
+                    $ismemberofcollection = utk_lib_digital_custom_parent($object_pid);
+                } else {
+                    $ismemberofcollection = "";
+                }
             } else {
                 $ismemberofcollection = "";
             }
@@ -176,4 +180,17 @@ function utk_lib_digital_custom_parent($pid_to_check)
         restore_error_handler();
     }
     return $ismemberofcollection;
+}
+
+/* protects against fatals by getting pid only if relationship predicate exists */
+function utk_lib_digital_check_object_pid($this_object)
+{
+
+    if (isset($this_object->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOfCollection')[0])) {
+        $pid = $this_object->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOfCollection')[0]['object']['value'];
+    } else if (isset($this_object->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOf')[0])) {
+        $pid = $this_object->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOf')[0]['object']['value'];
+    }
+
+    return $pid;
 }
