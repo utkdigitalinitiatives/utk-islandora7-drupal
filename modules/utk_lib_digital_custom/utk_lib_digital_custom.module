@@ -186,10 +186,21 @@ function utk_lib_digital_custom_parent($pid_to_check)
 function utk_lib_digital_check_object_pid($this_object)
 {
 
+    // basic images
     if (isset($this_object->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOfCollection')[0])) {
         $pid = $this_object->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOfCollection')[0]['object']['value'];
+
+    // book pages
     } else if (isset($this_object->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOf')[0])) {
         $pid = $this_object->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOf')[0]['object']['value'];
+
+    // compound objects
+    } else if (isset($this_object->relationships->get(FEDORA_RELS_EXT_URI, 'isConstituentOf')[0])) {
+        $pid = $this_object->relationships->get(FEDORA_RELS_EXT_URI, 'isConstituentOf')[0]['object']['value'];
+
+    // note explicitly noted
+    } else {
+        $pid = null;
     }
 
     return $pid;
