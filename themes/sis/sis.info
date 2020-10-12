@@ -4,6 +4,7 @@ core = '7.x'
 engine = 'phptemplate'
 screenshot = 'screenshot.png'
 base theme = 'omega'
+scripts[] = js/parentPid.js
 scripts[] = js/mark.js
 scripts[] = js/displayfixes.js
 regions[utk_header] = 'UTK Header'
