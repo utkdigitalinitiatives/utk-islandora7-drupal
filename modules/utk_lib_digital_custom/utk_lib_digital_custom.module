@@ -79,7 +79,7 @@ function utk_lib_digital_custom_header()
                       <ul class="utk-lib-digital--header--menu">
                         <li><a href="https://digital.lib.utk.edu">Home</a></li>
                         <li><a href="https://digital.lib.utk.edu/collections/about">About</a></li>
-                        <li><a href="https://digital.lib.utk.edu/collections/user">User Login</a></li>
+                        <li><a href="/collections/user">User Login</a></li>
                       </ul>
                   </div>
               </div>
