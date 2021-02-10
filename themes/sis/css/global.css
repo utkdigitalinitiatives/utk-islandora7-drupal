@@ -914,3 +914,12 @@ body.logged-in.toolbar.toolbar-drawer .utk-header {
 .islandora-video-object video {
     max-width: 100%;
 }
+
+.menu-block-wrapper  ul li {
+    float: none !important;
+}
+
+.menu-block-wrapper  ul li a,
+.menu-block-wrapper  ul li a:visited {
+    border-right: none !important;
+}
