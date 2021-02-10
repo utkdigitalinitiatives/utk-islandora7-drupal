@@ -2,5 +2,7 @@
 
 /**
  * @file
- * Drupal needs this blank file.
+ * Code for the UTK Node feature.
  */
+
+include_once 'utk_node.features.inc';
