@@ -59,7 +59,7 @@ function islandora_social_metatags_islandora_view_object() {
 
     //// Get Title.
     // If none available, exit.
-    if(count($title_objects > 1)) {
+    if(count($title_objects) > 1) {
       $title_pref = variable_get('islandora_social_metatags_compound_title', 'concatenate');
       // Remove parent or child as appropriate.
       switch($title_pref) {
