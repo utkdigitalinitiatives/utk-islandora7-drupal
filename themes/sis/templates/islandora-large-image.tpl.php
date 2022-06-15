@@ -25,9 +25,9 @@
   <div class="islandora-large-image-content-wrapper clearfix">
   <?php $transformed_pid = str_replace(":", "/", $islandora_object->id); ?>
   <?php $assemble_uri = 'http://' . getenv('HTTP_HOST') . '/assemble/manifest/' . $transformed_pid . '?update=1'; ?>
-  <?php print '<a href="' . $assemble_uri . '" ><img style="max-width:2rem" src="https://iiif.io/assets/images/logos/logo-sm.png" alt="View IIIF Manifest" title="View IIIF Manifest" /></a>'; ?>
-  <?php print '<a href="https://uv-v3.netlify.app/#?c=&m=&s=&cv=&manifest=' . $assemble_uri . '" ><img style="max-width:2rem" src="https://www.qdl.qa/sites/all/themes/QDLTheme/css/img/logo_uv.png" alt="Open in Universal Viewer" title="Open in Universal Viewer"/></a>'; ?>
-  <?php print '<a href="https://projectmirador.org/embed/?iiif-content=' . $assemble_uri . '" ><img style="max-width:2rem" src="https://www.qdl.qa/sites/all/themes/QDLTheme/css/img/logo_mirador.png" alt="Open in Mirador" title="Open in Mirador"/></a>'; ?>
+  <?php print '<a href="' . $assemble_uri . '" target="_blank"><img style="max-width:2rem" src="https://iiif.io/assets/images/logos/logo-sm.png" alt="View IIIF Manifest" title="View IIIF Manifest" /></a>'; ?>
+  <?php print '<a href="https://uv-v3.netlify.app/#?c=&m=&s=&cv=&manifest=' . $assemble_uri . '" target="_blank"><img style="max-width:2rem" src="https://www.qdl.qa/sites/all/themes/QDLTheme/css/img/logo_uv.png" alt="Open in Universal Viewer" title="Open in Universal Viewer"/></a>'; ?>
+  <?php print '<a href="https://projectmirador.org/embed/?iiif-content=' . $assemble_uri . '" target="_blank"><img style="max-width:2rem" src="https://www.qdl.qa/sites/all/themes/QDLTheme/css/img/logo_mirador.png" alt="Open in Mirador" title="Open in Mirador"/></a>'; ?>
    <?php if (!$islandora_content): ?>
       <?php if (!user_is_logged_in() && strpos(trim(parse_url(current_path())['path'], '/object/'), 'archivision', 1) !== 0): ?>
 	<p id='limited_access'>
