@@ -10,6 +10,13 @@
 
 <div class="islandora-audio-object islandora" vocab="http://schema.org/" prefix="dcterms: http://purl.org/dc/terms/" typeof="AudioObject">
   <div class="islandora-audio-content-wrapper clearfix">
+    <div class="IIIF" style="display: block;">
+      <?php $transformed_pid = str_replace(":", "/", $islandora_object->id); ?>
+      <?php $assemble_uri = 'http://' . getenv('HTTP_HOST') . '/assemble/manifest/' . $transformed_pid . '?update=1'; ?>
+      <?php print '<a href="' . $assemble_uri . '" ><img style="max-width:2rem" src="https://iiif.io/assets/images/logos/logo-sm.png" alt="View IIIF Manifest" title="View IIIF Manifest" /></a>'; ?>
+      <?php print '<a href="https://uv-v3.netlify.app/#?c=&m=&s=&cv=&manifest=' . $assemble_uri . '" ><img style="max-width:2rem" src="https://www.qdl.qa/sites/all/themes/QDLTheme/css/img/logo_uv.png" alt="Open in Universal Viewer" title="Open in Universal Viewer"/></a>'; ?>
+      <?php print '<a href="https://projectmirador.org/embed/?iiif-content=' . $assemble_uri . '" ><img style="max-width:2rem" src="https://www.qdl.qa/sites/all/themes/QDLTheme/css/img/logo_mirador.png" alt="Open in Mirador" title="Open in Mirador"/></a>'; ?>
+    </div>
     <?php if (isset($islandora_content)): ?>
       <div class="islandora-audio-content">
         <?php if (isset($object['PROXY_MP3']) && !islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object['PROXY_MP3'])): ?><p>This audio file is restricted to campus only.</p><?php endif; ?>
