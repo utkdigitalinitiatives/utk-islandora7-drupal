@@ -42,6 +42,6 @@
     <?php print $page; ?>
     <?php print $page_bottom; ?>
     <footer id="utk-lib-footer"></footer>
-    <script async src="https://www.lib.utk.edu/assets/universal-header.js"></script>
+    <script async src="https://old.lib.utk.edu/assets/universal-header.js"></script>
 </body>
 </html>
