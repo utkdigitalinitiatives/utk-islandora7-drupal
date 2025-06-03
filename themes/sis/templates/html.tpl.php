@@ -1,4 +1,4 @@
-<?php print $doctype; ?>
+old.lib.utk.edu<?php print $doctype; ?>
 <html lang="<?php print $language->language; ?>"
       dir="<?php print $language->dir; ?>"<?php print $rdf->version . $rdf->namespaces; ?>>
 <head<?php print $rdf->profile; ?>>
